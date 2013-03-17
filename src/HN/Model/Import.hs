@@ -15,3 +15,5 @@ importEverything = void $ do
   importProggit
   importVimeo
   importTwitter
+  importHackage
+  importHaskellWiki

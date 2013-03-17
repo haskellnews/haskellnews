@@ -79,6 +79,8 @@ data Source
   = Reddit
   | Vimeo
   | Twitter
+  | Hackage
+  | HaskellWiki
   deriving (Typeable,Show,Eq,Enum)
 
 sourceMapping :: [(Source,Int)]
@@ -86,6 +88,8 @@ sourceMapping =
   [(Reddit,1)
   ,(Vimeo,2)
   ,(Twitter,3)
+  ,(Hackage,4)
+  ,(HaskellWiki,5)
   ]
 
 instance ToHtml Source where
@@ -94,6 +98,8 @@ instance ToHtml Source where
       Reddit -> "Reddit"
       Vimeo -> "Vimeo"
       Twitter -> "Twitter"
+      Hackage -> "Hackage"
+      HaskellWiki -> "HaskellWiki"
 
 instance FromField Source where
   fromField f s = do

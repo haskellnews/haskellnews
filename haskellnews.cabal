@@ -29,6 +29,7 @@ executable haskellnews
                        network,
                        feed,
                        old-locale,
-                       curl
+                       curl,
+                       split
   hs-source-dirs:      src
   main-is:             Main.hs

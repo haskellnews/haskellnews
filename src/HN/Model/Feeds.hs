@@ -43,6 +43,12 @@ importTwitter :: Model c s (Either String ())
 importTwitter = do
   importGeneric Twitter "http://search.twitter.com/search.rss?q=%23haskell"
 
+importHaskellWiki =
+  importGeneric HaskellWiki "http://www.haskell.org/haskellwiki/index.php?title=Special:Recentchanges&feed=rss"
+
+importHackage =
+  importGeneric Hackage "http://hackage.haskell.org/packages/archive/recent.rss"
+
 -- | Import all vimeo content.
 importVimeo :: Model c s (Either String ())
 importVimeo = do
