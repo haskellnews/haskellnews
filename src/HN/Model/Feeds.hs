@@ -41,25 +41,31 @@ importProggit = do
 -- | Import from Twitter search for "#haskell".
 importTwitter :: Model c s (Either String ())
 importTwitter = do
-  importGeneric Twitter "http://search.twitter.com/search.rss?q=%23haskell"
+  importGeneric Twitter
+                "http://twitter.com"
+                "http://search.twitter.com/search.rss?q=%23haskell"
 
 importHaskellWiki =
-  importGeneric HaskellWiki "http://www.haskell.org/haskellwiki/index.php?title=Special:Recentchanges&feed=rss"
+  importGeneric HaskellWiki
+                "http://www.haskell.org"
+                "http://www.haskell.org/haskellwiki/index.php?title=Special:Recentchanges&feed=rss"
 
 importHackage =
-  importGeneric Hackage "http://hackage.haskell.org/packages/archive/recent.rss"
+  importGeneric Hackage
+                "http://hackage.haskell.org"
+                "http://hackage.haskell.org/packages/archive/recent.rss"
 
 -- | Import all vimeo content.
 importVimeo :: Model c s (Either String ())
 importVimeo = do
-  importGeneric Vimeo "http://vimeo.com/channels/haskell/videos/rss"
-  importGeneric Vimeo "http://vimeo.com/channels/galois/videos/rss"
+  importGeneric Vimeo "http://vimeo.com" "http://vimeo.com/channels/haskell/videos/rss"
+  importGeneric Vimeo "http://vimeo.com" "http://vimeo.com/channels/galois/videos/rss"
 
 -- | Import from a generic feed source.
-importGeneric :: Source -> String -> Model c s (Either String ())
-importGeneric source uri = do
+importGeneric :: Source -> String -> String -> Model c s (Either String ())
+importGeneric source prefix uri = do
   result <- io $ downloadFeed uri
-  case result >>= mapM makeItem . feedItems of
+  case result >>= mapM (makeItem prefix) . feedItems of
     Left e -> return (Left e)
     Right items -> do
       mapM_ (addItem source) items
@@ -68,18 +74,18 @@ importGeneric source uri = do
 -- | Get Reddit feed.
 getReddit :: String -> IO (Either String [NewItem])
 getReddit subreddit = do
-  result <- downloadFeed ("http://www.reddit.com/r/" ++ subreddit ++ "/.rss")
+  result <- downloadFeed ("http://reddit.com/r/" ++ subreddit ++ "/.rss")
   case result of
     Left e -> return (Left e)
-    Right e -> return (mapM makeItem (feedItems e))
+    Right e -> return (mapM (makeItem "http://redit.com/") (feedItems e))
 
 -- | Make an item from a feed item.
-makeItem :: Item -> Either String NewItem
-makeItem item =
+makeItem :: String -> Item -> Either String NewItem
+makeItem prefix item =
   NewItem <$> extract "item" (getItemTitle item)
           <*> extract "publish date" (getItemPublishDate item >>= parseRFC822)
           <*> extract "description" (getItemDescription item)
-          <*> extract "link" (getItemLink item >>= parseURI)
+          <*> extract "link" (getItemLink item >>= parseURI . (prefix ++))
 
   where extract label = maybe (Left ("unable to extract " ++ label)) Right
 
