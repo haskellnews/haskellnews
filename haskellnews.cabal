@@ -16,6 +16,13 @@ executable haskellnews
                        snap-core,
                        utf8-string,
                        bytestring,
-                       mtl
+                       mtl,
+                       snap-app >= 0.3.0,
+                       mime-mail,
+                       postgresql-simple,
+                       text,
+                       data-default,
+                       time,
+                       ConfigFile
   hs-source-dirs:      src
   main-is:             Main.hs

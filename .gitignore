@@ -1,6 +1,8 @@
 *.o
 *.hi
+cabal-dev
 cabal-dev/
 dist/
 log/
 TAGS
+haskellnews.conf

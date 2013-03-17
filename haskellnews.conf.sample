@@ -1,0 +1,14 @@
+[POSTGRESQL]
+host = 127.0.0.1
+port = 5432
+user = haskellnews
+pass = haskellnews
+db = haskellnews
+
+[WEB]
+domain = haskellnews
+cache = /tmp/hn-cache
+
+[ADDRESSES]
+admin = chrisdone@gmail.com
+site_addy = noreply@hn.org

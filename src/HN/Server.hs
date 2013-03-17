@@ -4,18 +4,27 @@
 
 module HN.Server where
 
-import Snap.Core
-import Snap.Http.Server
-import Snap.Util.FileServe
+import qualified HN.Controllers as C
+import           HN.Types
 
--- | Run the web server.
-runServer :: IO ()
-runServer = do
-  httpServe (setPort 10010 defaultConfig)
-            (route [("/js/",serveDirectory "static/js")
-                   ,("/css/",serveDirectory "static/css")
-                   ,("/",home)])
+import           Snap.App
+import           Snap.Http.Server           hiding (Config)
+import           Snap.Util.FileServe
 
--- | Home page.
-home :: Snap ()
-home = writeText "Hai"
+-- | Run the server.
+runServer :: Config -> Pool -> IO ()
+runServer config pool = do
+  setUnicodeLocale "en_US"
+  httpServe server (serve config pool)
+
+  where server = setPort 10010 defaultConfig
+
+-- | Serve the controllers.
+serve :: Config -> Pool -> Snap ()
+serve config pool = route routes where
+  routes = [("/js/",serveDirectory "static/js")
+           ,("/css/",serveDirectory "static/css")
+           ,("/js/",serveDirectory "static/js")
+           ,("/",run C.home)
+           ]
+  run = runHandler PState config pool
