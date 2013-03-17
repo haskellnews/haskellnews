@@ -1,0 +1,16 @@
+#!/bin/bash
+
+echo "Restarting HN ..."
+killall haskellnews -q
+
+while true
+do
+    if ps -C haskellnews > /dev/null
+    then
+       echo Waiting...;
+    else
+       break;
+    fi
+done
+
+dist/build/haskellnews/haskellnews 2> /dev/null & disown

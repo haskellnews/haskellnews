@@ -1,0 +1,21 @@
+name:                haskellnews
+version:             0.1.0.0
+synopsis:            Haskell news.
+homepage:            http://haskellnews.org/
+license:             BSD3
+license-file:        LICENSE
+author:              Chris Done
+maintainer:          chrisdone@gmail.com
+category:            Web
+build-type:          Simple
+cabal-version:       >=1.8
+
+executable haskellnews
+  build-depends:       base >=4 && < 5,
+                       snap-server,
+                       snap-core,
+                       utf8-string,
+                       bytestring,
+                       mtl
+  hs-source-dirs:      src
+  main-is:             Main.hs
