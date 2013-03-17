@@ -15,6 +15,15 @@ template name innerhead innerbody = do
               innerhead
     body !# name $ do
       innerbody
+      preEscapedText "<script type=\"text/javascript\"> var _gaq = _gaq \
+                     \|| []; _gaq.push(['_setAccount', 'UA-39372380-1']);\
+                     \ _gaq.push(['_trackPageview']); (function() {var ga\
+                     \ = document.createElement('script'); ga.type = 'tex\
+                     \t/javascript'; ga.async = true; ga.src = ('https:' \
+                     \== document.location.protocol ? 'https://ssl' : \
+                     \'http://www') + '.google-analytics.com/ga.js'; var\
+                     \ s = document.getElementsByTagName('script')[0]; \
+                     \s.parentNode.insertBefore(ga, s);})(); </script>"
 
 showCount :: (Show n,Integral n) => n -> String
 showCount = reverse . foldr merge "" . zip ("000,00,00,00"::String) . reverse . show where
