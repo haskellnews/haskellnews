@@ -47,7 +47,9 @@ Some well-known channels:
 
 - Haskell-related tweets from Twitter with a tag.
 
-* Google+
+* TODO Google+
+
+Seems hard, like YouTube. Google suck at providing RSS feeds for anything.
 
 - Haskell community posts.
 - Posts related to Haskell with a tag.
