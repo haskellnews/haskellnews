@@ -7,7 +7,6 @@ import HN.Model.Migrations
 import HN.Server
 import HN.Types
 
-import Data.Maybe
 import Snap.App
 import Snap.App.Migrate
 import System.Environment
@@ -19,9 +18,8 @@ main = do
   config <- getConfig cpath
   pool <- newPool (configPostgres config)
   let db = runDB () config pool
-
-  case foldr const "" action of
-    "--create-version" -> db $ migrate True versions
-    _ -> do
-      db $ migrate False versions
-      runServer config pool
+  case foldr const "" (map (dropWhile (=='-')) action) of
+    "create-version" -> db $ migrate True versions
+    "migrate"        -> db $ migrate False versions
+    _                -> do db $ migrate False versions
+                           runServer config pool
