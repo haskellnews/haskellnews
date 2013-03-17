@@ -9,8 +9,9 @@ import HN.View
 import HN.View.Template
 
 import Data.List.Split
+import Data.Time.Relative
 
-grouped groups = template "grouped" mempty $ do
+grouped now groups = template "grouped" mempty $ do
   container $ do
     heading
     row $
@@ -29,15 +30,13 @@ grouped groups = template "grouped" mempty $ do
                   a ! href (toValue (show (iLink item))) $ toHtml (iTitle item)
                   " — "
                   case iSource item of
-                    Hackage -> do
-                      preEscapedText (iDescription item)
                     Github ->
                       em $ do toHtml $ iDescription item
                               br
-                              toHtml (show (iPublished item))
-                    _ -> em $ toHtml (show (iPublished item))
+                              agoZoned (iPublished item) now
+                    _ -> em $ agoZoned (iPublished item) now
 
-mixed items = template "mixed" mempty $ do
+mixed now items = template "mixed" mempty $ do
   container $ do
     heading
     row $
@@ -53,13 +52,14 @@ mixed items = template "mixed" mempty $ do
               a ! href (toValue (show (iLink item))) $ toHtml (iTitle item)
               " — "
               case iSource item of
-                Hackage -> do
-                  preEscapedText (iDescription item)
                 Github ->
                   em $ do toHtml $ iDescription item
                           br
-                          toHtml (show (iPublished item))
-                _ -> em $ toHtml (show (iPublished item))
+                          agoZoned (iPublished item) now
+                _ -> em $ agoZoned (iPublished item) now
+
+agoZoned t1 t2 = span ! title (toValue (show t1)) $
+  toHtml (relativeZoned t1 t2 True)
 
 heading = do
   row $ span12 $ do
