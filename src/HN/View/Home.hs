@@ -12,7 +12,9 @@ import Data.List.Split
 
 home groups = template "home" mempty $ do
   container $ do
-    row $ span12 $ h1 "Haskell News"
+    row $ span12 $ do
+      h1 "Haskell News"
+      p $ em !. "muted" $ "Updated every 10 minutes."
     forM_ (chunksOf 2 groups) $ \items ->
       row $
         forM_ items $ \(source,items) ->
