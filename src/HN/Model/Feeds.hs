@@ -4,7 +4,6 @@ module HN.Model.Feeds where
 
 import HN.Data
 import HN.Monads
-
 import HN.Model.Items
 import HN.Types
 
@@ -38,6 +37,16 @@ importProggit = do
       return (Right ())
 
   where hasHaskell = isInfixOf "haskell" . map toLower
+
+-- | Import from the Vimeo Haskell channel.
+importVimeo :: Model c s (Either String ())
+importVimeo = do
+  result <- io $ downloadFeed "http://vimeo.com/channels/haskell/videos/rss"
+  case result >>= mapM makeItem . feedItems of
+    Left e -> return (Left e)
+    Right items -> do
+      mapM_ (addItem Vimeo) items
+      return (Right ())
 
 -- | Get Reddit feed.
 getReddit :: String -> IO (Either String [NewItem])

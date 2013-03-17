@@ -13,3 +13,4 @@ importEverything = void $ do
   -- TODO: Handle errors and log them.
   importRedditHaskell
   importProggit
+  importVimeo
