@@ -3,8 +3,6 @@
 module HN.Model.Feeds where
 
 import HN.Data
-import HN.Model.Source
-import HN.Model
 import HN.Monads
 import HN.Types
 
@@ -29,11 +27,11 @@ importRedditHaskell = do
              ,"(source,published,title,description,link)"
              ,"VALUES"
              ,"(?,?,?,?,?)"]
-             (sourceId HaskellReddit
+             (HaskellReddit
              ,niPublished item
              ,niTitle item
              ,niDescription item
-             ,show (niLink item))
+             ,niLink item)
       return (Right ())
 
 -- | Get Reddit feed.

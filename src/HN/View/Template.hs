@@ -15,6 +15,7 @@ template name innerhead innerbody = do
               innerhead
     body !# name $ do
       innerbody
+      footer
       preEscapedText "<script type=\"text/javascript\"> var _gaq = _gaq \
                      \|| []; _gaq.push(['_setAccount', 'UA-39372380-1']);\
                      \ _gaq.push(['_trackPageview']); (function() {var ga\
