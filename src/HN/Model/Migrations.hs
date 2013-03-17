@@ -28,5 +28,9 @@ versions = zip [1..] ms where
            ,"ALTER TABLE item ADD source integer not null"]
        ,ex ["ALTER TABLE item ADD link text not null;"
            ,"ALTER TABLE item ADD CONSTRAINT item_unique UNIQUE(source,published,title,link)"]
+       ,ex ["CREATE INDEX item_source_idx ON item(source);"
+           ,"CREATE INDEX item_published_idx ON item(published);"
+           ,"CREATE INDEX item_title_idx ON item(title);"
+           ,"CREATE INDEX item_link_idx ON item(link);"]
        ]
   ex q = exec q ()
