@@ -81,6 +81,7 @@ data Source
   | Twitter
   | Hackage
   | HaskellWiki
+  | Github
   deriving (Typeable,Show,Eq,Enum)
 
 sourceMapping :: [(Source,Int)]
@@ -90,6 +91,7 @@ sourceMapping =
   ,(Twitter,3)
   ,(Hackage,4)
   ,(HaskellWiki,5)
+  ,(Github,6)
   ]
 
 instance ToHtml Source where
@@ -100,6 +102,7 @@ instance ToHtml Source where
       Twitter -> "Twitter"
       Hackage -> "Hackage"
       HaskellWiki -> "HaskellWiki"
+      Github -> "Github"
 
 instance FromField Source where
   fromField f s = do

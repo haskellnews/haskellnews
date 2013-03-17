@@ -26,4 +26,8 @@ home groups = template "home" mempty $ do
                   case iSource item of
                     Hackage -> do
                       preEscapedText (iDescription item)
+                    Github ->
+                      em $ do toHtml $ iDescription item
+                              br
+                              toHtml (show (iPublished item))
                     _ -> em $ toHtml (show (iPublished item))

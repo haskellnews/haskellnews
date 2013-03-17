@@ -3,6 +3,7 @@
 module HN.Model.Import where
 
 import HN.Model.Feeds
+import HN.Model.Soup
 import HN.Monads
 
 import Snap.App
@@ -17,3 +18,4 @@ importEverything = void $ do
   importTwitter
   importHackage
   importHaskellWiki
+  importGithub

@@ -6,9 +6,9 @@ import HN.Data
 import HN.Monads
 import HN.Model.Items
 import HN.Types
+import HN.Curl
 
 import Control.Applicative
-import Network.Curl
 import Network.URI
 import Snap.App
 import System.Locale
@@ -74,10 +74,10 @@ importGeneric source prefix uri = do
 -- | Get Reddit feed.
 getReddit :: String -> IO (Either String [NewItem])
 getReddit subreddit = do
-  result <- downloadFeed ("http://reddit.com/r/" ++ subreddit ++ "/.rss")
+  result <- downloadFeed ("http://www.reddit.com/r/" ++ subreddit ++ "/.rss")
   case result of
     Left e -> return (Left e)
-    Right e -> return (mapM (makeItem "http://redit.com/") (feedItems e))
+    Right e -> return (mapM (makeItem "http://reddit.com") (feedItems e))
 
 -- | Make an item from a feed item.
 makeItem :: String -> Item -> Either String NewItem
@@ -98,15 +98,6 @@ downloadFeed uri = do
     Right str -> case parseFeedString str of
       Nothing -> return (Left ("Unable to parse feed from: " ++ uri))
       Just feed -> return (Right feed)
-
--- | Download a string from a URI.
-downloadString :: String -> IO (Either (CurlCode,String) String)
-downloadString uri = do
-  withCurlDo $ do
-    (code,resp) <- curlGetString_ uri []
-    case code of
-      CurlOK -> return (Right resp)
-      _ -> return (Left (code,resp))
 
 -- | Parse an RFC 822 timestamp.
 parseRFC822 :: String -> Maybe ZonedTime

@@ -30,6 +30,7 @@ executable haskellnews
                        feed,
                        old-locale,
                        curl,
-                       split
+                       split,
+                       tagsoup
   hs-source-dirs:      src
   main-is:             Main.hs
