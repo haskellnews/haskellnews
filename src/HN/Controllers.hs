@@ -13,7 +13,7 @@ import Snap.App
 -- | Home page.
 home :: Controller Config PState ()
 home = do
-  groups <- forM [toEnum 0 ..] $ \source -> do
+  groups <- forM [Reddit,HaskellCafe,StackOverflow,Github,PlanetHaskell,Twitter,Hackage,Vimeo,HaskellWiki] $ \source -> do
     items <- model $ getItemsBySource source 10
     return (source,items)
   view $ V.home groups

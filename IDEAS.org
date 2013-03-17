@@ -12,7 +12,7 @@ All streams should support adding items manually.
 - Haskell
 - iPhone/Web/etc.
 
-* TODO Blogs
+* DONE Blogs
 
 So we can start with Planet Haskell:
 
@@ -54,11 +54,11 @@ Seems hard, like YouTube. Google suck at providing RSS feeds for anything.
 - Haskell community posts.
 - Posts related to Haskell with a tag.
 
-* Hackage
+* DONE Hackage
 
 - New hackage packages and updates.
 
-* Github repositories
+* DONE Github repositories
 
 - Any new ones created with Haskell as the main language.
 - New versions pushed.
@@ -67,20 +67,20 @@ Seems hard, like YouTube. Google suck at providing RSS feeds for anything.
 
 Maybe.
 
-* HaskellWiki
+* DONE HaskellWiki
 
 Can show latest changes.
 
 * Events
 
 Can be taken from various places and inputted manually.
-* Job listings
+* DONE Job listings
 
 Haskellers:
 
 http://www.haskellers.com/jobs
 
-* StackOverflow
+* DONE StackOverflow
 
 SO:
 

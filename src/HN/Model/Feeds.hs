@@ -38,6 +38,35 @@ importProggit = do
 
   where hasHaskell = isInfixOf "haskell" . map toLower
 
+importHaskellCafe = do
+  importGenerically HaskellCafe
+                    ""
+                    "https://groups.google.com/group/haskell-cafe/feed/rss_v2_0_msgs.xml"
+                    (\item -> item { niTitle = strip (niTitle item) })
+
+  where strip x | isPrefixOf "re: " (map toLower x) = strip (drop 4 x)
+                | isPrefixOf label x = drop (length label) x
+                | otherwise = x
+        label = "[Haskell-cafe]"
+
+importPlanetHaskell = do
+  importGeneric PlanetHaskell
+                "http://planet.haskell.org/"
+                "http://planet.haskell.org/rss20.xml"
+
+importJobs = do
+  importGeneric Jobs
+                "http://www.haskellers.com"
+                "http://www.haskellers.com/feed/jobs"
+
+importStackOverflow = do
+  importGeneric StackOverflow
+                "http://stackoverflow.com"
+                "http://stackoverflow.com/feeds/tag/haskell"
+  importGeneric StackOverflow
+                "http://programmers.stackexchange.com"
+                "http://programmers.stackexchange.com/feeds/tag/haskell"
+
 -- | Import from Twitter search for "#haskell".
 importTwitter :: Model c s (Either String ())
 importTwitter = do
@@ -64,9 +93,16 @@ importVimeo = do
 -- | Import from a generic feed source.
 importGeneric :: Source -> String -> String -> Model c s (Either String ())
 importGeneric source prefix uri = do
+  importGenerically source prefix uri id
+
+-- | Import from a generic feed source.
+importGenerically :: Source -> String -> String -> (NewItem -> NewItem) -> Model c s (Either String ())
+importGenerically source prefix uri f = do
   result <- io $ downloadFeed uri
-  case result >>= mapM (makeItem prefix) . feedItems of
-    Left e -> return (Left e)
+  case result >>= mapM (fmap f . makeItem prefix) . feedItems of
+    Left e -> do
+      io $ putStrLn e
+      return (Left e)
     Right items -> do
       mapM_ (addItem source) items
       return (Right ())
@@ -83,7 +119,7 @@ getReddit subreddit = do
 makeItem :: String -> Item -> Either String NewItem
 makeItem prefix item =
   NewItem <$> extract "item" (getItemTitle item)
-          <*> extract "publish date" (getItemPublishDate item >>= parseRFC822)
+          <*> extract "publish date" (getItemPublishDate item >>= parseDate)
           <*> extract "description" (getItemDescription item)
           <*> extract "link" (getItemLink item >>= parseURI . (prefix ++))
 
@@ -98,6 +134,12 @@ downloadFeed uri = do
     Right str -> case parseFeedString str of
       Nothing -> return (Left ("Unable to parse feed from: " ++ uri))
       Just feed -> return (Right feed)
+
+parseDate x = parseRFC822 x <|> parseRFC3339 x
+
+-- | Parse an RFC 3339 timestamp.
+parseRFC3339 :: String -> Maybe ZonedTime
+parseRFC3339 = parseTime defaultTimeLocale "%Y-%m-%dT%TZ"
 
 -- | Parse an RFC 822 timestamp.
 parseRFC822 :: String -> Maybe ZonedTime

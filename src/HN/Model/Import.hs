@@ -19,3 +19,6 @@ importEverything = void $ do
   importHackage
   importHaskellWiki
   importGithub
+  importStackOverflow
+  importPlanetHaskell
+  importHaskellCafe

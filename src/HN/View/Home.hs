@@ -13,7 +13,7 @@ import Data.List.Split
 home groups = template "home" mempty $ do
   container $ do
     row $ span12 $ h1 "Haskell News"
-    forM_ (chunk 2 groups) $ \items ->
+    forM_ (chunksOf 2 groups) $ \items ->
       row $
         forM_ items $ \(source,items) ->
           span6 $ do
