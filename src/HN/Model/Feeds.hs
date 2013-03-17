@@ -4,6 +4,8 @@ module HN.Model.Feeds where
 
 import HN.Data
 import HN.Monads
+
+import HN.Model.Items
 import HN.Types
 
 import Control.Applicative
@@ -22,17 +24,20 @@ importRedditHaskell = do
   case result of
     Left e -> return (Left e)
     Right items -> do
-      forM_ items $ \item ->
-        exec ["INSERT INTO item"
-             ,"(source,published,title,description,link)"
-             ,"VALUES"
-             ,"(?,?,?,?,?)"]
-             (HaskellReddit
-             ,niPublished item
-             ,niTitle item
-             ,niDescription item
-             ,niLink item)
+      mapM_ (addItem HaskellReddit) items
       return (Right ())
+
+-- | Import from proggit.
+importProggit :: Model c s (Either String ())
+importProggit = do
+  result <- io $ getReddit "programming"
+  case result of
+    Left e -> return (Left e)
+    Right items -> do
+      mapM_ (addItem Proggit) (filter (hasHaskell . niTitle) items)
+      return (Right ())
+
+  where hasHaskell = isInfixOf "haskell" . map toLower
 
 -- | Get Reddit feed.
 getReddit :: String -> IO (Either String [NewItem])

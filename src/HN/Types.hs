@@ -7,16 +7,18 @@ module HN.Types where
 import HN.Monads
 
 import Control.Applicative
-import Data.Typeable
+import Control.Arrow
 import Data.Text (Text)
 import Data.Time (ZonedTime)
+import Data.Typeable
 import Database.PostgreSQL.Simple
 import Database.PostgreSQL.Simple.FromField
-import Database.PostgreSQL.Simple.ToField
 import Database.PostgreSQL.Simple.FromRow
+import Database.PostgreSQL.Simple.ToField
 import Network.Mail.Mime (Address)
 import Network.URI
 import Snap.App.Types
+import Text.Blaze
 
 --------------------------------------------------------------------------------
 -- Basic site types
@@ -75,18 +77,32 @@ instance FromRow DItem where
 -- | A source of content.
 data Source
   = HaskellReddit
-  deriving (Typeable,Show)
+  | Proggit
+  deriving (Typeable,Show,Eq,Enum)
+
+sourceMapping :: [(Source,Int)]
+sourceMapping =
+  [(HaskellReddit,1)
+  ,(Proggit,2)
+  ]
+
+instance ToHtml Source where
+  toHtml i = toHtml $
+    case i of
+      HaskellReddit -> "Haskell Reddit (/r/haskell)"
+      Proggit -> "Haskell from /r/programming"
 
 instance FromField Source where
   fromField f s = do
     i <- fromField f s
-    case i :: Int of
-      1 -> pure HaskellReddit
+    case lookup i (map (snd &&& fst) sourceMapping) of
+      Just r -> pure r
       _ -> returnError ConversionFailed f "invalid content source"
 
 instance ToField Source where
-  toField s = toField $ case s of
-    HaskellReddit -> toField (1 :: Int)
+  toField s = toField $ case lookup s sourceMapping of
+    Nothing -> error "unable to encode field"
+    Just i -> toField i
 
 --------------------------------------------------------------------------------
 -- Misc types

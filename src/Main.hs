@@ -4,6 +4,7 @@ module Main where
 
 import HN.Config
 import HN.Model.Migrations
+import HN.Model.Import
 import HN.Server
 import HN.Types
 
@@ -21,5 +22,6 @@ main = do
   case foldr const "" (map (dropWhile (=='-')) action) of
     "create-version" -> db $ migrate True versions
     "migrate"        -> db $ migrate False versions
+    "import"         -> db $ importEverything
     _                -> do db $ migrate False versions
                            runServer config pool

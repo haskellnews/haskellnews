@@ -27,6 +27,8 @@ executable haskellnews
                        blaze-html,
                        HUnit,
                        network,
-                       feed
+                       feed,
+                       old-locale,
+                       curl
   hs-source-dirs:      src
   main-is:             Main.hs

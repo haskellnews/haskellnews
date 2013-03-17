@@ -1,10 +1,10 @@
 All streams should support adding items manually.
 
-* Reddit
+* DONE Reddit
 
-- The Haskell reddit
-- The Haskell proposals reddit (?)
-- Proggit with the word 'Haskell'/'GHC' and such in it
+** DONE The Haskell reddit
+** The Haskell proposals reddit (?) — NO. Not relevant anymore.
+** DONE Proggit with the word 'Haskell'/'GHC' and such in it
 
 * Mailing lists
 
