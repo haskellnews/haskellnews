@@ -8,9 +8,9 @@ All streams should support adding items manually.
 
 * TODO Mailing lists
 
-- Haskell-Cafe
-- Haskell
-- iPhone/Web/etc.
+** DONE Haskell-Cafe
+** TODO Haskell
+** TODO iPhone/Web/etc.
 
 * DONE Blogs
 
@@ -33,7 +33,7 @@ This seems hard, there's no RSS feed for it.
 
 There's a list that was posted recently, created by Chris Smith.
 
-* The IRC channels
+* TODO The IRC channels
 
 Some well-known channels:
 
