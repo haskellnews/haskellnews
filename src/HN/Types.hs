@@ -76,24 +76,21 @@ instance FromRow DItem where
 
 -- | A source of content.
 data Source
-  = HaskellReddit
-  | Proggit
+  = Reddit
   | Vimeo
   deriving (Typeable,Show,Eq,Enum)
 
 sourceMapping :: [(Source,Int)]
 sourceMapping =
-  [(HaskellReddit,1)
-  ,(Proggit,2)
-  ,(Vimeo,3)
+  [(Reddit,1)
+  ,(Vimeo,2)
   ]
 
 instance ToHtml Source where
   toHtml i = toHtml $
     case i of
-      HaskellReddit -> "Haskell Reddit (/r/haskell)"
-      Proggit -> "Haskell from /r/programming"
-      Vimeo -> "Vimeo Haskell channel"
+      Reddit -> "Reddit submissions"
+      Vimeo -> "Vimeo videos"
 
 instance FromField Source where
   fromField f s = do

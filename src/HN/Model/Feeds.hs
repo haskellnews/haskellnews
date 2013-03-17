@@ -23,7 +23,7 @@ importRedditHaskell = do
   case result of
     Left e -> return (Left e)
     Right items -> do
-      mapM_ (addItem HaskellReddit) items
+      mapM_ (addItem Reddit) items
       return (Right ())
 
 -- | Import from proggit.
@@ -33,19 +33,25 @@ importProggit = do
   case result of
     Left e -> return (Left e)
     Right items -> do
-      mapM_ (addItem Proggit) (filter (hasHaskell . niTitle) items)
+      mapM_ (addItem Reddit) (filter (hasHaskell . niTitle) items)
       return (Right ())
 
   where hasHaskell = isInfixOf "haskell" . map toLower
 
--- | Import from the Vimeo Haskell channel.
+-- | Import all vimeo content.
 importVimeo :: Model c s (Either String ())
 importVimeo = do
-  result <- io $ downloadFeed "http://vimeo.com/channels/haskell/videos/rss"
+  importGeneric Vimeo "http://vimeo.com/channels/haskell/videos/rss"
+  importGeneric Vimeo "http://vimeo.com/channels/galois/videos/rss"
+
+-- | Import from a generic feed source.
+importGeneric :: Source -> String -> Model c s (Either String ())
+importGeneric source uri = do
+  result <- io $ downloadFeed uri
   case result >>= mapM makeItem . feedItems of
     Left e -> return (Left e)
     Right items -> do
-      mapM_ (addItem Vimeo) items
+      mapM_ (addItem source) items
       return (Right ())
 
 -- | Get Reddit feed.

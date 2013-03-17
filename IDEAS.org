@@ -21,9 +21,9 @@ http://planet.haskell.org/
 But these blogs also contain personal posts which are unrelated to
 Haskell, so there should be a way to filter and mark those.
 
-* TODO Vimeo channels
+* DONE Vimeo channels
 ** DONE Vimeo Haskell channel
-** TODO Galois
+** DONE Galois
 
 The site is here: http://vimeo.com/channels/galois/videos/rss
 
