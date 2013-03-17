@@ -1,0 +1,86 @@
+All streams should support adding items manually.
+
+* Reddit
+
+- The Haskell reddit
+- The Haskell proposals reddit (?)
+- Proggit with the word 'Haskell'/'GHC' and such in it
+
+* Mailing lists
+
+- Haskell-Cafe
+- Haskell
+- iPhone/Web/etc.
+
+* Blogs
+
+So we can start with Planet Haskell:
+
+http://planet.haskell.org/
+
+But these blogs also contain personal posts which are unrelated to
+Haskell, so there should be a way to filter and mark those.
+
+* Vimeo channels
+** Galois
+
+The site is here: http://vimeo.com/channels/galois/videos/rss
+
+* YouTube channels
+
+There's a list that was posted recently, created by Chris Smith.
+
+* The IRC channels
+
+Some well-known channels:
+
+- #haskell
+- #haskell-lens
+- #yesod
+- #snap
+- #happs
+
+* Twitter
+
+- Haskell-related tweets from Twitter with a tag.
+
+* Google+
+
+- Haskell community posts.
+- Posts related to Haskell with a tag.
+
+* Hackage
+
+- New hackage packages and updates.
+
+* Github repositories
+
+- Any new ones created with Haskell as the main language.
+- New versions pushed.
+
+* Hpaste
+
+Maybe.
+
+* HaskellWiki
+
+Can show latest changes.
+
+* Events
+
+Can be taken from various places and inputted manually.
+* Job listings
+
+Haskellers:
+
+http://www.haskellers.com/jobs
+
+* StackOverflow
+
+SO:
+
+http://stackoverflow.com/questions/tagged/haskell
+
+Programmers:
+
+http://programmers.stackexchange.com/questions/tagged/haskell
