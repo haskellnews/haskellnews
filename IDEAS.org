@@ -29,6 +29,8 @@ The site is here: http://vimeo.com/channels/galois/videos/rss
 
 * YouTube channels
 
+This seems hard, there's no RSS feed for it.
+
 There's a list that was posted recently, created by Chris Smith.
 
 * The IRC channels
