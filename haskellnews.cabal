@@ -26,6 +26,7 @@ executable haskellnews
                        ConfigFile,
                        blaze-html,
                        HUnit,
-                       network
+                       network,
+                       feed
   hs-source-dirs:      src
   main-is:             Main.hs
