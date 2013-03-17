@@ -21,7 +21,7 @@ home groups = template "home" mempty $ do
             table !. "table" $
               forM_ items $ \item ->
                 tr $ td $ do
-                  a ! hrefURI (iLink item) $ toHtml (iTitle item)
+                  a ! href (toValue (show (iLink item))) $ toHtml (iTitle item)
                   " — "
                   case iSource item of
                     Hackage -> do
