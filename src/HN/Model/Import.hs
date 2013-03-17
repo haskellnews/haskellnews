@@ -14,3 +14,4 @@ importEverything = void $ do
   importRedditHaskell
   importProggit
   importVimeo
+  importTwitter

@@ -78,19 +78,22 @@ instance FromRow DItem where
 data Source
   = Reddit
   | Vimeo
+  | Twitter
   deriving (Typeable,Show,Eq,Enum)
 
 sourceMapping :: [(Source,Int)]
 sourceMapping =
   [(Reddit,1)
   ,(Vimeo,2)
+  ,(Twitter,3)
   ]
 
 instance ToHtml Source where
   toHtml i = toHtml $
     case i of
-      Reddit -> "Reddit submissions"
-      Vimeo -> "Vimeo videos"
+      Reddit -> "Reddit"
+      Vimeo -> "Vimeo"
+      Twitter -> "Twitter"
 
 instance FromField Source where
   fromField f s = do

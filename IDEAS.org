@@ -6,13 +6,13 @@ All streams should support adding items manually.
 ** The Haskell proposals reddit (?) — NO. Not relevant anymore.
 ** DONE Proggit with the word 'Haskell'/'GHC' and such in it
 
-* Mailing lists
+* TODO Mailing lists
 
 - Haskell-Cafe
 - Haskell
 - iPhone/Web/etc.
 
-* Blogs
+* TODO Blogs
 
 So we can start with Planet Haskell:
 
@@ -27,7 +27,7 @@ Haskell, so there should be a way to filter and mark those.
 
 The site is here: http://vimeo.com/channels/galois/videos/rss
 
-* YouTube channels
+* TODO YouTube channels
 
 This seems hard, there's no RSS feed for it.
 
@@ -43,7 +43,7 @@ Some well-known channels:
 - #snap
 - #happs
 
-* Twitter
+* DONE Twitter
 
 - Haskell-related tweets from Twitter with a tag.
 

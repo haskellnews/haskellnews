@@ -38,6 +38,11 @@ importProggit = do
 
   where hasHaskell = isInfixOf "haskell" . map toLower
 
+-- | Import from Twitter search for "#haskell".
+importTwitter :: Model c s (Either String ())
+importTwitter = do
+  importGeneric Twitter "http://search.twitter.com/search.rss?q=%23haskell"
+
 -- | Import all vimeo content.
 importVimeo :: Model c s (Either String ())
 importVimeo = do
