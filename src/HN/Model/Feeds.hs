@@ -98,6 +98,7 @@ importGeneric source prefix uri = do
 -- | Import from a generic feed source.
 importGenerically :: Source -> String -> String -> (NewItem -> NewItem) -> Model c s (Either String ())
 importGenerically source prefix uri f = do
+  io $ putStrLn $ "Importing " ++ show source ++ " ... "
   result <- io $ downloadFeed uri
   case result >>= mapM (fmap f . makeItem prefix) . feedItems of
     Left e -> do
