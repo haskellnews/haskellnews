@@ -23,6 +23,9 @@ executable haskellnews
                        text,
                        data-default,
                        time,
-                       ConfigFile
+                       ConfigFile,
+                       blaze-html,
+                       HUnit,
+                       network
   hs-source-dirs:      src
   main-is:             Main.hs

@@ -2,16 +2,16 @@
 
 module HN.Types where
 
-import HN.Data
+
 import HN.Monads
 
-import Control.Applicative
-import Data.Text
+
+
 import Database.PostgreSQL.Simple
-import Database.PostgreSQL.Simple.FromRow
+
 import Network.Mail.Mime (Address)
 import Snap.App.Types
-import Text.Blaze.Pagination
+
 
 -- | Site-wide configuration.
 data Config = Config
