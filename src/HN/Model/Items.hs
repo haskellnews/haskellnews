@@ -17,6 +17,15 @@ getItemsBySource source limit =
         ,"LIMIT ?"]
         (source,limit)
 
+-- | Get all items.
+getItems :: Int -> Model c s [DItem]
+getItems limit =
+  query ["SELECT id,source,title,added,published,description,link"
+        ,"FROM item"
+        ,"ORDER BY published DESC"
+        ,"LIMIT ?"]
+        (Only limit)
+
 -- | Insert an item, if it doesn't already exist.
 addItem :: Source -> NewItem -> Model c s ()
 addItem source item = do

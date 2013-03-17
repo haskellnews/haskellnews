@@ -25,6 +25,8 @@ serve config pool = route routes where
   routes = [("/js/",serveDirectory "static/js")
            ,("/css/",serveDirectory "static/css")
            ,("/js/",serveDirectory "static/js")
-           ,("/",run C.home)
+           ,("/mixed",run C.mixed)
+           ,("/grouped",run C.grouped)
+           ,("/",run C.mixed)
            ]
   run = runHandler PState config pool
