@@ -1,3 +1,5 @@
 #footer .container .credit { margin: 20px 0; }
 #footer { margin-top: 5em; background: #f5f5f5; border-top: 1px solid #f0f0f0 }
 a:visited { color: #777; }
+.favicon { width: 16px; height: 16px; }
+.icon { width: 16px }

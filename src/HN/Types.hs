@@ -109,7 +109,11 @@ sourceMapping =
   ]
 
 instance ToHtml Source where
-  toHtml i = toHtml $
+  toHtml = toHtml . sourceToString
+instance ToValue Source where
+  toValue = toValue . sourceToString
+
+sourceToString i =
     case i of
       Reddit -> "Reddit"
       Vimeo -> "Vimeo"

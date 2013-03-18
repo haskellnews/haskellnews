@@ -10,6 +10,7 @@ import HN.View.Template
 
 import Data.List.Split
 import Data.Time.Relative
+import Network.URI
 
 grouped now groups = template "grouped" mempty $ do
   container $ do
@@ -48,14 +49,20 @@ mixed now items = template "mixed" mempty $ do
       span12 $
         table !. "table" $
           forM_ items $ \item ->
-            tr $ td $ do
-              a ! href (toValue (show (iLink item))) $ toHtml (iTitle item)
-              " — "
-              case iSource item of
-                Github ->
-                  em $ do toHtml $ iDescription item; " — "; agoZoned (iPublished item) now
-                _ -> em $ agoZoned (iPublished item) now
-              div !. "muted" $ small $ do " "; toHtml (iSource item)
+            tr $ do
+              td !. "icon" $
+                img ! src (if iSource item == HaskellCafe
+                              then "http://www.haskell.org/favicon.ico"
+                              else toValue (show ((iLink item) { uriPath = "/favicon.ico" })))
+                    !. "favicon"
+                    ! title (toValue (iSource item))
+              td $ do
+                a ! href (toValue (show (iLink item))) $ toHtml (iTitle item)
+                " — "
+                case iSource item of
+                  Github ->
+                    em $ do toHtml $ iDescription item; " — "; agoZoned (iPublished item) now
+                  _ -> em $ agoZoned (iPublished item) now
 
 agoZoned t1 t2 = span ! title (toValue (show t1)) $
   toHtml (relativeZoned t1 t2 True)
