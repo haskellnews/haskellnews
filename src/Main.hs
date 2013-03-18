@@ -26,4 +26,5 @@ main = do
     "import"         -> do db importEverything
                            clearCache config
     _                -> do db $ migrate False versions
+                           clearCache config
                            runServer config pool
