@@ -53,9 +53,7 @@ mixed now items = template "mixed" mempty $ do
               " — "
               case iSource item of
                 Github ->
-                  em $ do toHtml $ iDescription item
-                          br
-                          agoZoned (iPublished item) now
+                  em $ do toHtml $ iDescription item; " — "; agoZoned (iPublished item) now
                 _ -> em $ agoZoned (iPublished item) now
               div !. "muted" $ small $ do " "; toHtml (iSource item)
 
