@@ -10,6 +10,7 @@ import HN.View.Template
 
 import Data.List.Split
 import Data.Time.Relative
+import qualified Data.Text as T
 import Network.URI
 
 grouped now groups = template "grouped" mempty $ do
@@ -32,8 +33,9 @@ grouped now groups = template "grouped" mempty $ do
                   " — "
                   case iSource item of
                     Github ->
-                      em $ do toHtml $ iDescription item
-                              br
+                      em $ do when (not (T.null (iDescription item))) $ do
+                                toHtml $ iDescription item
+                                br
                               agoZoned (iPublished item) now
                     _ -> em $ agoZoned (iPublished item) now
 
@@ -61,7 +63,8 @@ mixed now items = template "mixed" mempty $ do
                 " — "
                 case iSource item of
                   Github ->
-                    em $ do toHtml $ iDescription item; " — "; agoZoned (iPublished item) now
+                    em $ do when (not (T.null (iDescription item))) $ do toHtml $ iDescription item; " — "
+                            agoZoned (iPublished item) now
                   _ -> em $ agoZoned (iPublished item) now
 
 agoZoned t1 t2 = span ! title (toValue (show t1)) $
