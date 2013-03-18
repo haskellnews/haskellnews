@@ -90,6 +90,7 @@ data Source
   | Jobs
   | PlanetHaskell
   | HaskellCafe
+  | GooglePlus
   deriving (Typeable,Show,Eq,Enum)
 
 sourceMapping :: [(Source,Int)]
@@ -104,6 +105,7 @@ sourceMapping =
   ,(Jobs,8)
   ,(PlanetHaskell,9)
   ,(HaskellCafe,10)
+  ,(GooglePlus,11)
   ]
 
 instance ToHtml Source where
@@ -119,6 +121,7 @@ instance ToHtml Source where
       Jobs -> "Jobs"
       PlanetHaskell -> "Planet Haskell"
       HaskellCafe -> "Haskell-Cafe"
+      GooglePlus -> "Google+"
 
 instance FromField Source where
   fromField f s = do

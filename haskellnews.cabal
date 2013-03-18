@@ -31,6 +31,8 @@ executable haskellnews
                        old-locale,
                        curl,
                        split,
-                       tagsoup
+                       tagsoup,
+                       filepath,
+                       directory
   hs-source-dirs:      src
   main-is:             Main.hs
