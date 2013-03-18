@@ -17,7 +17,7 @@ executable haskellnews
                        utf8-string,
                        bytestring,
                        mtl,
-                       snap-app >= 0.3.0,
+                       snap-app >= 0.3.1,
                        mime-mail,
                        postgresql-simple,
                        text,

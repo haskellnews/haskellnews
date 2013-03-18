@@ -10,6 +10,7 @@ import HN.Types
 
 import Snap.App
 import Snap.App.Migrate
+import Snap.App.Cache
 import System.Environment
 
 -- | Main entry point.
@@ -22,6 +23,7 @@ main = do
   case foldr const "" (map (dropWhile (=='-')) action) of
     "create-version" -> db $ migrate True versions
     "migrate"        -> db $ migrate False versions
-    "import"         -> db $ importEverything
+    "import"         -> do db importEverything
+                           clearCache config
     _                -> do db $ migrate False versions
                            runServer config pool

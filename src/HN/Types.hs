@@ -18,6 +18,7 @@ import Database.PostgreSQL.Simple.ToField
 import Network.Mail.Mime (Address)
 import Network.URI
 import Snap.App.Types
+import Snap.App.Cache
 import Text.Blaze
 
 --------------------------------------------------------------------------------
@@ -34,6 +35,9 @@ data Config = Config
 
 instance AppConfig Config where
   getConfigDomain = configDomain
+
+instance CacheDir Config where
+  getCacheDir = configCacheDir
 
 instance AppLiftModel Config PState where
   liftModel action = do
@@ -127,6 +131,17 @@ instance ToField Source where
   toField s = toField $ case lookup s sourceMapping of
     Nothing -> error "unable to encode field"
     Just i -> toField i
+
+--------------------------------------------------------------------------------
+-- Cache key
+
+data CacheKey
+  = Mixed
+  | Grouped
+
+instance Key CacheKey where
+  keyToString Mixed = "mixed.html"
+  keyToString Grouped = "grouped.html"
 
 --------------------------------------------------------------------------------
 -- Misc types
