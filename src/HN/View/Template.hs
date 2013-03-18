@@ -5,6 +5,7 @@ module HN.View.Template where
 
 import HN.View
 import qualified Text.Blaze.Html5 as H (title)
+import qualified Text.Blaze.Html5.Attributes as A (name)
 
 template name innerhead innerbody = do
   docType
@@ -15,6 +16,7 @@ template name innerhead innerbody = do
               link ! rel "stylesheet" ! type_ "text/css" ! href "/css/haskellnews.css"
               meta ! httpEquiv "Content-Type" ! content "text/html; charset=UTF-8"
               innerhead
+              meta ! A.name "description" ! content "An aggregation of all online content related to Haskell, including Google+, Reddit, Twitter, Github, HaskellWiki, StackOverflow, Planet Haskell, Hackage, ..."
     body !# name $ do
       innerbody
       footer

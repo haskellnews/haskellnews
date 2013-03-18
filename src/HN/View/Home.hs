@@ -13,7 +13,7 @@ import Data.Time.Relative
 import qualified Data.Text as T
 import Network.URI
 
-grouped now groups = template "grouped" mempty $ do
+grouped now groups = template "grouped" (return ()) $ do
   container $ do
     heading
     row $
@@ -39,7 +39,7 @@ grouped now groups = template "grouped" mempty $ do
                               agoZoned (iPublished item) now
                     _ -> em $ agoZoned (iPublished item) now
 
-mixed now items = template "mixed" mempty $ do
+mixed now items = template "mixed" (return ()) $ do
   container $ do
     heading
     row $
