@@ -57,6 +57,7 @@ mixed now items = template "mixed" mempty $ do
                           br
                           agoZoned (iPublished item) now
                 _ -> em $ agoZoned (iPublished item) now
+              div !. "muted" $ small $ do " "; toHtml (iSource item)
 
 agoZoned t1 t2 = span ! title (toValue (show t1)) $
   toHtml (relativeZoned t1 t2 True)
