@@ -84,14 +84,18 @@ extractItems = do
 -- | Collect items into a loop. This loops.
 collectItems :: Soup [NewItem]
 collectItems = do
-  skipTagByName "li"
   skipTagByName "h3"
   a <- gotoTagByName "a"
+  name <- nextText
   link <- fmap ("http://github.com" ++) (getAttrib "href" a)
   uri <- meither "couldn't parse URI" (parseURI link)
-  name <- nextText
-  skipTagByNameAttrs "p" (any (\(key,value) -> key == "class" && "description" == value))
-  desc <- nextText
+  skipTagByNameAttrs "div" (any (\(key,value) -> key == "class" && "body" == value))
+  state <- get
+  modify $ takeWhile (not . tagClose (=="div"))
+  desc <- (do skipTagByNameAttrs "p" (any (\(key,value) -> key == "class" && "description" == value))
+              nextText)
+          <|> return ""
+  put state
   timetag <- gotoTagByName "time"
   time <- getAttrib "datetime" timetag
   t <- parseGithubTime time
