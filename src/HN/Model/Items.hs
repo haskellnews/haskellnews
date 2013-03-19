@@ -32,11 +32,9 @@ addItem source item = do
   exists <- single ["SELECT true"
                    ,"FROM item"
                    ,"WHERE source = ?"
-                   ,"AND   published = ?"
                    ,"AND   title = ?"
                    ,"AND   link = ?"]
                    (source
-                   ,niPublished item
                    ,niTitle item
                    ,niLink item)
   case exists :: Maybe Bool of
