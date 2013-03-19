@@ -24,7 +24,7 @@ executable haskellnews
                        data-default,
                        time,
                        ConfigFile,
-                       blaze-html,
+                       blaze-html == 0.4.3.4,
                        HUnit,
                        network,
                        feed,
