@@ -29,7 +29,7 @@ grouped now groups = template "grouped" (return ()) $ do
             table !. "table" $
               forM_ items $ \item ->
                 tr $ td $ do
-                  a ! href (toValue (show (iLink item))) $ toHtml (iTitle item)
+                  a ! href (toValue (show (iLink item))) ! target "_blank" $ toHtml (iTitle item)
                   " — "
                   case iSource item of
                     Github ->
@@ -59,7 +59,7 @@ mixed now items = template "mixed" (return ()) $ do
                     !. "favicon"
                     ! title (toValue (iSource item))
               td $ do
-                a ! href (toValue (show (iLink item))) $ toHtml (iTitle item)
+                a ! href (toValue (show (iLink item))) ! target "_blank" $ toHtml (iTitle item)
                 " — "
                 case iSource item of
                   Github ->
