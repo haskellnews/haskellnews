@@ -19,7 +19,7 @@ import Text.Feed.Types
 -- | Get /r/haskell.
 importRedditHaskell :: Model c s (Either String ())
 importRedditHaskell = do
-  io $ putStr $ "Importing " ++ show Reddit ++ " ... "
+--  io $ putStr $ "Importing " ++ show Reddit ++ " ... "
   result <- io $ getReddit "haskell"
   case result of
     Left e -> return (Left e)
@@ -30,7 +30,7 @@ importRedditHaskell = do
 -- | Import from proggit.
 importProggit :: Model c s (Either String ())
 importProggit = do
-  io $ putStr $ "Importing " ++ show Reddit ++ " ... "
+--  io $ putStr $ "Importing " ++ show Reddit ++ " ... "
   result <- io $ getReddit "programming"
   case result of
     Left e -> return (Left e)
@@ -85,7 +85,7 @@ importGeneric source uri = do
 -- | Import from a generic feed source.
 importGenerically :: Source -> String -> (NewItem -> NewItem) -> Model c s (Either String ())
 importGenerically source uri f = do
-  io $ putStr $ "Importing " ++ show source ++ " ... "
+--  io $ putStr $ "Importing " ++ show source ++ " ... "
   result <- io $ downloadFeed uri
   case result >>= mapM (fmap f . makeItem) . feedItems of
     Left e -> do
