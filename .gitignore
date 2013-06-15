@@ -6,3 +6,4 @@ dist/
 log/
 TAGS
 haskellnews.conf
+.hsenv/
