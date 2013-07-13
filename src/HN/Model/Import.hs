@@ -13,19 +13,19 @@ import Snap.App
 importEverything :: Model c s ()
 importEverything = void $ do
   io $ hSetBuffering stdout NoBuffering
-  forM_ [importRedditHaskell
-        ,importProggit
-        ,importVimeo
-        ,importTwitter
-        ,importHackage
-        ,importHaskellWiki
-        ,importGithub
-        ,importStackOverflow
-        ,importPlanetHaskell
-        ,importHaskellCafe
-        ,importGooglePlus]
-        $ \m -> do
+  forM_ [(importRedditHaskell,"importRedditHaskell")
+        ,(importProggit,"importProggit")
+        ,(importVimeo,"importVimeo")
+        ,(importTwitter,"importTwitter")
+        ,(importHackage,"importHackage")
+        ,(importHaskellWiki,"importHaskellWiki")
+        ,(importGithub,"importGithub")
+        ,(importStackOverflow,"importStackOverflow")
+        ,(importPlanetHaskell,"importPlanetHaskell")
+        ,(importHaskellCafe,"importHaskellCafe")
+        ,(importGooglePlus,"importGooglePlus")]
+        $ \(m,op) -> do
           result <- m
           case result of
-            Right{} -> io $ putStrLn "OK."
-            Left e -> io $ putStrLn e
+            Right{} -> return ()
+            Left e -> io $ print (op,e)

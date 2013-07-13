@@ -33,6 +33,7 @@ executable haskellnews
                        split,
                        tagsoup,
                        filepath,
-                       directory
+                       directory,
+                       hs-twitter
   hs-source-dirs:      src
   main-is:             Main.hs

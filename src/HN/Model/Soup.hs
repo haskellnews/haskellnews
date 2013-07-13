@@ -19,13 +19,13 @@ import Snap.App
 import System.Locale
 import Text.HTML.TagSoup
 import Text.HTML.TagSoup.Match
+import TagSoup
 
 --------------------------------------------------------------------------------
 -- Google+
 
 importGooglePlus :: Model c s (Either String ())
 importGooglePlus = do
-  io $ putStr "Importing Google+ ... "
   result <- io $ downloadString "https://plus.google.com/communities/104818126031270146189"
   case result of
     Left e -> return (Left (show e))
@@ -65,7 +65,6 @@ getShares = do
 -- | Import a list of repos from Github's “latest created Haskell repos” list.
 importGithub :: Model c s (Either String ())
 importGithub = do
-  io $ putStr "Importing Github ... "
   result <- io $ downloadString "https://github.com/languages/Haskell/created"
   case result of
     Left e -> return (Left (show e))
@@ -107,64 +106,44 @@ collectItems = do
     , niPublished = t
     } : items
 
-meither e Nothing = throwError e
-meither _ (Just x) = return x
-
 --------------------------------------------------------------------------------
--- Functions to make tagsoup suck less
+-- Twitter
 
-newtype Soup a = Soup { unSoup :: StateT [Tag String] (Either String) a }
-  deriving (Monad,Functor,MonadError String,MonadState [Tag String],Alternative,Applicative)
+-- | Import recent Tweets from the search.
+importTwitter :: Model c s (Either String ())
+importTwitter = do
+  result <- io $ downloadString "https://twitter.com/search?q=haskell%20-rugby%20%23haskell&src=typd"
+  case result of
+    Left e -> return (Left (show e))
+    Right str ->
+      case runSoup (parseTags str) extractTwitterItems of
+        Left e -> return (Left e)
+        Right items -> do mapM_ (addItem Twitter) items
+                          return (Right ())
 
-runSoup :: [Tag String] -> Soup a -> Either String a
-runSoup xs m = evalStateT (unSoup m) xs
-
-getAttrib :: String -> Tag String -> Soup String
-getAttrib att (TagOpen _ atts) = return (fromMaybe empty $ lookup att atts)
-getAttrib _ x                  = throwError ("(" ++ show x ++ ") is not a TagOpen")
-
-gotoTagByNameAttrs :: String -> ([Attribute String] -> Bool) -> Soup (Tag String)
-gotoTagByNameAttrs name attrs = do
-  xs <- get
-  case dropWhile (not . tagOpen (==name) attrs) xs of
-    [] -> throwError $ "Unable to find tag " ++ name ++ "."
-    (x:xs) -> do put xs
-                 return x
-
-gotoTagByName :: String -> Soup (Tag String)
-gotoTagByName name = do
-  xs <- get
-  case dropWhile (not . tagOpen (==name) (const True)) xs of
-    [] -> throwError $ "Unable to find tag " ++ name ++ "."
-    (x:xs) -> do put xs
-                 return x
-
-skipTagByName :: String -> Soup ()
-skipTagByName name = void $ gotoTagByName name
-
-skipTagByNameAttrs :: String -> ([Attribute String] -> Bool) -> Soup ()
-skipTagByNameAttrs name attrs = void $ gotoTagByNameAttrs name attrs
-
-nextText :: Soup String
-nextText = do
-  xs <- get
-  case xs of
-    (TagText x:xs) -> do put xs
-                         return x
-    _ -> throwError $ "Expected tag content but got something else: " ++ show (take 1 xs)
-
-parseGithubTime :: (ParseTime a) => String -> Soup a
-parseGithubTime str =
-  case parseTime defaultTimeLocale "%Y-%m-%dT%T%z" str of
-    Nothing -> throwError $ "Unable to parse datetime: " ++ str
-    Just t -> return t
-
-parseDate :: (ParseTime a) => String -> Soup a
-parseDate str =
-  case parseTime defaultTimeLocale "%Y-%m-%d" str of
-    Nothing -> throwError $ "Unable to parse date: " ++ str
-    Just t -> return t
-
--- | Extract all text content from tags (similar to Verbatim found in HaXml)
-tagsText :: [Tag String] -> String
-tagsText = intercalate " " . map trim . mapMaybe maybeTagText
+-- | Skip to the repo list and extract the items.
+extractTwitterItems :: Soup [NewItem]
+extractTwitterItems = go where
+  go = do
+    skipTagByNameClass "li" "stream-item"
+    skipTagByNameClass "div" "original-tweet"
+    skipTagByNameClass "div" "content"
+    skipTagByNameClass "span" "username"
+    skipTagByName "b"
+    username <- nextText
+    a <- gotoTagByNameClass "a" "tweet-timestamp"
+    link <- getAttrib "href" a
+    uri <- meither "couldn't parse URI" (parseURI ("https://twitter.com" ++ link))
+    timestamp <- gotoTagByName "span"
+    epoch <- getAttrib "data-time" timestamp
+    published <- parseEpoch epoch
+    gotoTagByNameClass "p" "tweet-text"
+    tags <- get
+    let tweet = tagsTxt (takeWhile (not . tagCloseLit "p") tags)
+    items <- go <|> return []
+    return $ NewItem
+      { niTitle = username ++ ": " ++ tweet
+      , niPublished = published
+      , niDescription = ""
+      , niLink = uri
+      } : items
