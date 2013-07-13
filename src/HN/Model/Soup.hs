@@ -121,7 +121,7 @@ importTwitter = do
         Right items -> do mapM_ (addItem Twitter) items
                           return (Right ())
 
--- | Skip to the repo list and extract the items.
+-- | Skip to each tweet and extract the items.
 extractTwitterItems :: Soup [NewItem]
 extractTwitterItems = go where
   go = do
