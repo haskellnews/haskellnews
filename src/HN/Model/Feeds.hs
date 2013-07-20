@@ -58,6 +58,11 @@ importIrcQuotes = do
   importGeneric IrcQuotes
                 "http://ircbrowse.net/quotes.rss"
 
+-- | Import pastes about Haskell.
+importPastes = do
+  importGeneric Pastes
+                "http://lpaste.net/channel/haskell/rss"
+
 --------------------------------------------------------------------------------
 -- Reddit
 
