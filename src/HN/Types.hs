@@ -108,8 +108,8 @@ sourceMapping =
   ,(GooglePlus,11)
   ]
 
-instance ToHtml Source where
-  toHtml = toHtml . sourceToString
+instance ToMarkup Source where
+  toMarkup = toMarkup . sourceToString
 instance ToValue Source where
   toValue = toValue . sourceToString
 

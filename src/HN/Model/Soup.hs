@@ -112,7 +112,7 @@ collectItems = do
 -- | Import recent Tweets from the search.
 importTwitter :: Model c s (Either String ())
 importTwitter = do
-  result <- io $ downloadString "https://twitter.com/search?q=haskell%20-rugby%20%23haskell&src=typd"
+  result <- io $ downloadString "https://twitter.com/search?q=haskell%20-rugby%20-jewelry%20%23haskell&src=typd"
   case result of
     Left e -> return (Left (show e))
     Right str ->

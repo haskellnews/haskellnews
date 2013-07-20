@@ -12,19 +12,20 @@ cabal-version:       >=1.8
 
 executable haskellnews
   build-depends:       base >=4 && < 5,
+                       snap-app >= 0.5.0,
+                       blaze-html   >= 0.6,
+                       blaze-markup >= 0.5,
                        snap-server,
                        snap-core,
                        utf8-string,
                        bytestring,
                        mtl,
-                       snap-app >= 0.3.1,
                        mime-mail,
                        postgresql-simple,
                        text,
                        data-default,
                        time,
                        ConfigFile,
-                       blaze-html == 0.4.3.4,
                        HUnit,
                        network,
                        feed,
@@ -33,7 +34,6 @@ executable haskellnews
                        split,
                        tagsoup,
                        filepath,
-                       directory,
-                       hs-twitter
+                       directory
   hs-source-dirs:      src
   main-is:             Main.hs
