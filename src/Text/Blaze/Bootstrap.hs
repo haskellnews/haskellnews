@@ -3,7 +3,6 @@
 
 module Text.Blaze.Bootstrap where
 
-import Text.Blaze
 import Text.Blaze.Html5
 import Text.Blaze.Extra
 import Prelude (($))
