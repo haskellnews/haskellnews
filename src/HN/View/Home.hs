@@ -10,7 +10,6 @@ import           HN.View.Template
 
 import           Data.List.Split
 import qualified Data.Text as T
-import           Data.Time
 import           Data.Time.Relative
 import           Network.URI
 import           System.Locale

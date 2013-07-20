@@ -3,7 +3,6 @@
 
 module HN.Controllers where
 
-import           HN.Blaze
 import           HN.Monads
 import           HN.Model.Items
 import           HN.Types
@@ -38,7 +37,7 @@ feed = do
   outputRSS "Haskell News"
             "http://haskellnews.org/"
             (map (\DItem{..} -> (zonedTimeToUTC iAdded
-                                ,iTitle
+                                ,T.pack ("[" ++ show iSource ++ "] ") `T.append` iTitle
                                 ,""
                                 ,T.pack $ show iLink))
                  items)
