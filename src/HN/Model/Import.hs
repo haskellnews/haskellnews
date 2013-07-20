@@ -25,7 +25,8 @@ importEverything = void $ do
         ,(importHaskellCafe,"importHaskellCafe")
         ,(importGooglePlus,"importGooglePlus")
         ,(importIrcQuotes,"importIrcQuotes")
-        ,(importPastes,"importPastes")]
+        ,(importPastes,"importPastes")
+        ,(importHaskellLive,"importHaskellLive")]
         $ \(m,op) -> do
           result <- m
           case result of

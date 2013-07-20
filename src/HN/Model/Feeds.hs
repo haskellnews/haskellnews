@@ -63,6 +63,10 @@ importPastes = do
   importGeneric Pastes
                 "http://lpaste.net/channel/haskell/rss"
 
+importHaskellLive = do
+  importGeneric HaskellLive
+                "http://feeds.feedburner.com/HaskellLive?format=rss"
+
 --------------------------------------------------------------------------------
 -- Reddit
 
