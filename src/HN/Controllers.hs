@@ -1,16 +1,19 @@
+{-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module HN.Controllers where
 
-import HN.Blaze
-import HN.Monads
-import HN.Model.Items
-import HN.Types
-import HN.Data
-import HN.View.Home as V
+import           HN.Blaze
+import           HN.Monads
+import           HN.Model.Items
+import           HN.Types
+import           HN.Data
+import           HN.View.Home as V
 
-import Snap.App
-import Snap.App.Cache
+import qualified Data.Text as T
+import           Snap.App
+import           Snap.App.Cache
+import           Snap.App.RSS
 
 -- | Grouped display.
 grouped :: Controller Config PState ()
@@ -27,3 +30,14 @@ mixed = viewCached Mixed $ do
   items <- model $ getItems 100
   now <- io getZonedTime
   return $ V.mixed now items
+
+feed :: Controller Config PState ()
+feed = do
+  items <- model $ getItems 30
+  outputRSS "Haskell News"
+            "http://haskellnews.org/"
+            (map (\DItem{..} -> (zonedTimeToUTC iAdded
+                                ,iTitle
+                                ,""
+                                ,T.pack $ show iLink))
+                 items)

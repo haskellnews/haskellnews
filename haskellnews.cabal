@@ -12,7 +12,7 @@ cabal-version:       >=1.8
 
 executable haskellnews
   build-depends:       base >=4 && < 5,
-                       snap-app >= 0.5.0,
+                       snap-app >= 0.6.0,
                        blaze-html   >= 0.6,
                        blaze-markup >= 0.5,
                        snap-server,
