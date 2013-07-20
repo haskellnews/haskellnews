@@ -23,7 +23,8 @@ importEverything = void $ do
         ,(importStackOverflow,"importStackOverflow")
         ,(importPlanetHaskell,"importPlanetHaskell")
         ,(importHaskellCafe,"importHaskellCafe")
-        ,(importGooglePlus,"importGooglePlus")]
+        ,(importGooglePlus,"importGooglePlus")
+        ,(importIrcQuotes,"importIrcQuotes")]
         $ \(m,op) -> do
           result <- m
           case result of

@@ -91,6 +91,7 @@ data Source
   | PlanetHaskell
   | HaskellCafe
   | GooglePlus
+  | IrcQuotes
   deriving (Typeable,Show,Eq,Enum)
 
 sourceMapping :: [(Source,Int)]
@@ -106,6 +107,7 @@ sourceMapping =
   ,(PlanetHaskell,9)
   ,(HaskellCafe,10)
   ,(GooglePlus,11)
+  ,(IrcQuotes,12)
   ]
 
 instance ToMarkup Source where
@@ -126,6 +128,7 @@ sourceToString i =
       PlanetHaskell -> "Planet Haskell"
       HaskellCafe -> "Haskell-Cafe"
       GooglePlus -> "Google+"
+      IrcQuotes -> "IRC Quotes"
 
 instance FromField Source where
   fromField f s = do

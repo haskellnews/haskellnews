@@ -53,6 +53,11 @@ importVimeo = do
   		    "http://vimeo.com/rickasaurus/videos/rss"
   		    (\ni -> if isInfixOf "haskell" (map toLower (niTitle ni)) then return ni else Nothing)
 
+-- | Import @remember'd IRC quotes from ircbrowse.
+importIrcQuotes = do
+  importGeneric IrcQuotes
+                "http://ircbrowse.net/quotes.rss"
+
 --------------------------------------------------------------------------------
 -- Reddit
 
