@@ -37,7 +37,7 @@ feed = do
   outputRSS "Haskell News"
             "http://haskellnews.org/"
             (map (\DItem{..} -> (zonedTimeToUTC iAdded
-                                ,T.pack ("[" ++ show iSource ++ "] ") <> iTitle
+                                ,"[" <> T.pack (show iSource) <> "] " <> iTitle
                                 ,""
                                 ,T.pack $ show iLink))
                  items)
