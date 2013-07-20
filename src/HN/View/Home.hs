@@ -5,13 +5,15 @@
 
 module HN.View.Home where
 
-import HN.View
-import HN.View.Template
+import           HN.View
+import           HN.View.Template
 
-import Data.List.Split
-import Data.Time.Relative
+import           Data.List.Split
 import qualified Data.Text as T
-import Network.URI
+import           Data.Time
+import           Data.Time.Relative
+import           Network.URI
+import           System.Locale
 
 grouped now groups = template "grouped" (return ()) $ do
   container $ do
@@ -47,25 +49,30 @@ mixed now items = template "mixed" (return ()) $ do
         ul !. "nav nav-pills" $ do
           li $ a ! href "/grouped" $ "Grouped"
           li !. "active" $ a "Mixed"
-    row $
-      span12 $
-        table !. "table" $
-          forM_ items $ \item ->
-            tr $ do
-              td !. "icon" $
-                img ! src (if iSource item == HaskellCafe
-                              then "http://www.haskell.org/favicon.ico"
-                              else toValue (show ((iLink item) { uriPath = "/favicon.ico" })))
-                    !. "favicon"
-                    ! title (toValue (iSource item))
-              td $ do
-                a ! href (toValue (show (iLink item))) ! target "_blank" $ toHtml (iTitle item)
-                " — "
-                case iSource item of
-                  Github ->
-                    em $ do when (not (T.null (iDescription item))) $ do toHtml $ iDescription item; " — "
-                            agoZoned (iPublished item) now
-                  _ -> em $ agoZoned (iPublished item) now
+    mixedRow now items
+
+mixedRow now items =
+  row !# "mixed-row" $
+    span12 $
+      table !. "table" $
+        forM_ items $ \item ->
+          tr ! id (toValue ("item-" ++ epoch (iPublished item))) $ do
+            td !. "icon" $
+              img ! src (if iSource item == HaskellCafe
+                            then "http://www.haskell.org/favicon.ico"
+                            else toValue (show ((iLink item) { uriPath = "/favicon.ico" })))
+                  !. "favicon"
+                  ! title (toValue (iSource item))
+            td $ do
+              a ! href (toValue (show (iLink item))) ! target "_blank" $ toHtml (iTitle item)
+              " — "
+              case iSource item of
+                Github ->
+                  em $ do when (not (T.null (iDescription item))) $ do toHtml $ iDescription item; " — "
+                          agoZoned (iPublished item) now
+                _ -> em $ agoZoned (iPublished item) now
+
+epoch = formatTime defaultTimeLocale "%s"
 
 agoZoned t1 t2 = span ! title (toValue (show t1)) $
   toHtml (relativeZoned t1 t2 True)
@@ -73,4 +80,4 @@ agoZoned t1 t2 = span ! title (toValue (show t1)) $
 heading = do
   row $ span12 $ do
     h1 "Haskell News"
-    p $ em !. "muted" $ "Updated every 10 minutes."
+    p $ em !. "muted" $ "Updated automatically every 10 minutes."

@@ -17,7 +17,7 @@ getItemsBySource source limit =
         ,"LIMIT ?"]
         (source,limit)
 
--- | Get all items.
+-- | Get recent items.
 getItems :: Int -> Model c s [DItem]
 getItems limit =
   query ["SELECT id,source,title,added,published,description,link"
@@ -25,6 +25,16 @@ getItems limit =
         ,"ORDER BY published DESC"
         ,"LIMIT ?"]
         (Only limit)
+
+-- | Get items created after id.
+getItemsAfter :: Int -> Int -> Model c s [DItem]
+getItemsAfter id limit =
+  query ["SELECT id,source,title,added,published,description,link"
+        ,"FROM item"
+        ,"WHERE extract(epoch from published) > ?"
+        ,"ORDER BY published DESC"
+        ,"LIMIT ?"]
+        (id,limit)
 
 -- | Insert an item, if it doesn't already exist.
 addItem :: Source -> NewItem -> Model c s ()

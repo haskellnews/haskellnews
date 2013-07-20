@@ -31,6 +31,7 @@ mixed = viewCached Mixed $ do
   now <- io getZonedTime
   return $ V.mixed now items
 
+-- | Output an RSS feed.
 feed :: Controller Config PState ()
 feed = do
   items <- model $ getItems 30
@@ -41,3 +42,13 @@ feed = do
                                 ,""
                                 ,T.pack $ show iLink))
                  items)
+
+-- | Output items after some number in a page fragment.
+after :: Controller Config PState ()
+after = do
+  n <- getInteger "epoch" 0
+  when (n /= 0) $ do
+    items <- model $ getItemsAfter (fromIntegral n) 100
+    unless (null items) $ do
+      now <- io getZonedTime
+      output $ V.mixedRow now items

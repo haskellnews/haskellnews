@@ -28,6 +28,7 @@ serve config pool = route routes where
            ,("/mixed",run C.mixed)
            ,("/grouped",run C.grouped)
            ,("/feed",run C.feed)
+           ,("/after/:epoch",run C.after)
            ,("/",run C.mixed)
            ]
   run = runHandler PState config pool

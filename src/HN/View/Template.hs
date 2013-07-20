@@ -20,6 +20,8 @@ template name innerhead innerbody = do
     body !# name $ do
       innerbody
       footer
+      script ! src "http://code.jquery.com/jquery-1.10.1.min.js" $ mempty
+      script ! src "/js/haskellnews.js" $ mempty
       preEscapedToHtml ("<script type=\"text/javascript\"> var _gaq = _gaq \
                        \|| []; _gaq.push(['_setAccount', 'UA-39372380-1']);\
                        \ _gaq.push(['_trackPageview']); (function() {var ga\
