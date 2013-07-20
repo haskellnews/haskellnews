@@ -48,28 +48,28 @@ mixed now items = template "mixed" (return ()) $ do
         ul !. "nav nav-pills" $ do
           li $ a ! href "/grouped" $ "Grouped"
           li !. "active" $ a "Mixed"
-    mixedRow now items
+    row $
+      span12 $
+        table !. "table" $
+          mixedRows now items
 
-mixedRow now items =
-  row !# "mixed-row" $
-    span12 $
-      table !. "table" $
-        forM_ items $ \item ->
-          tr ! id (toValue ("item-" ++ epoch (iPublished item))) $ do
-            td !. "icon" $
-              img ! src (if iSource item == HaskellCafe
-                            then "http://www.haskell.org/favicon.ico"
-                            else toValue (show ((iLink item) { uriPath = "/favicon.ico" })))
-                  !. "favicon"
-                  ! title (toValue (iSource item))
-            td $ do
-              a ! href (toValue (show (iLink item))) ! target "_blank" $ toHtml (iTitle item)
-              " — "
-              case iSource item of
-                Github ->
-                  em $ do when (not (T.null (iDescription item))) $ do toHtml $ iDescription item; " — "
-                          agoZoned (iPublished item) now
-                _ -> em $ agoZoned (iPublished item) now
+mixedRows now items =
+  forM_ items $ \item ->
+    tr ! id (toValue ("item-" ++ epoch (iPublished item))) $ do
+      td !. "icon" $
+        img ! src (if iSource item == HaskellCafe
+                      then "http://www.haskell.org/favicon.ico"
+                      else toValue (show ((iLink item) { uriPath = "/favicon.ico" })))
+            !. "favicon"
+            ! title (toValue (iSource item))
+      td $ do
+        a ! href (toValue (show (iLink item))) ! target "_blank" $ toHtml (iTitle item)
+        " — "
+        case iSource item of
+          Github ->
+            em $ do when (not (T.null (iDescription item))) $ do toHtml $ iDescription item; " — "
+                    agoZoned (iPublished item) now
+          _ -> em $ agoZoned (iPublished item) now
 
 epoch = formatTime defaultTimeLocale "%s"
 

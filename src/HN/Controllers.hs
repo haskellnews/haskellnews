@@ -50,4 +50,4 @@ after = do
     items <- model $ getItemsAfter (fromIntegral n) 100
     unless (null items) $ do
       now <- io getZonedTime
-      output $ V.mixedRow now items
+      output $ V.mixedRows now items
