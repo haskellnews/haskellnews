@@ -22,6 +22,7 @@ getItems :: Int -> Model c s [DItem]
 getItems limit =
   query ["SELECT id,source,title,added,published,description,link"
         ,"FROM item"
+	,"WHERE published < NOW()"
         ,"ORDER BY published DESC"
         ,"LIMIT ?"]
         (Only limit)
@@ -31,7 +32,7 @@ getItemsAfter :: Int -> Int -> Model c s [DItem]
 getItemsAfter id limit =
   query ["SELECT id,source,title,added,published,description,link"
         ,"FROM item"
-        ,"WHERE extract(epoch from published) > ?"
+        ,"WHERE published < NOW() and extract(epoch from published) > ?"
         ,"ORDER BY published DESC"
         ,"LIMIT ?"]
         (id,limit)

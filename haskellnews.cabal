@@ -37,4 +37,4 @@ executable haskellnews
                        directory
   hs-source-dirs:      src
   main-is:             Main.hs
-  ghc-options:         -Wall
+  ghc-options:         -Wall -fno-warn-unused-do-bind
