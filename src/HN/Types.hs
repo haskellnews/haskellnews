@@ -94,6 +94,7 @@ data Source
   | IrcQuotes
   | Pastes
   | HaskellLive
+  | Events
   deriving (Typeable,Show,Eq,Enum)
 
 sourceMapping :: [(Source,Int)]
@@ -112,6 +113,7 @@ sourceMapping =
   ,(IrcQuotes,12)
   ,(Pastes,13)
   ,(HaskellLive,14)
+  ,(Events,15)
   ]
 
 instance ToMarkup Source where
@@ -135,6 +137,7 @@ sourceToString i =
       IrcQuotes -> "IRC Quotes"
       Pastes -> "Pastes"
       HaskellLive -> "Haskell Live"
+      Events -> "Events"
 
 instance FromField Source where
   fromField f s = do

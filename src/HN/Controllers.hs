@@ -17,7 +17,7 @@ import           Snap.App.RSS
 -- | Grouped display.
 grouped :: Controller Config PState ()
 grouped = viewCached Grouped $ do
-  groups <- forM [Reddit,HaskellCafe,StackOverflow,Pastes,Github,PlanetHaskell,GooglePlus,Twitter,Hackage,IrcQuotes,Vimeo,HaskellWiki] $ \source -> do
+  groups <- forM [Reddit,HaskellCafe,StackOverflow,Pastes,Github,PlanetHaskell,GooglePlus,Twitter,Events,Hackage,IrcQuotes,Vimeo,HaskellWiki] $ \source -> do
     items <- model $ getItemsBySource source 10
     return (source,items)
   now <- io getZonedTime

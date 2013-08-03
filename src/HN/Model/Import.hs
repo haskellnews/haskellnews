@@ -26,7 +26,8 @@ importEverything = void $ do
         ,(importGooglePlus,"importGooglePlus")
         ,(importIrcQuotes,"importIrcQuotes")
         ,(importPastes,"importPastes")
-        ,(importHaskellLive,"importHaskellLive")]
+        ,(importHaskellLive,"importHaskellLive")
+        ,(importEvents,"importEvents")]
         $ \(m,op) -> do
           result <- m
           case result of

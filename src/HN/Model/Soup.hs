@@ -147,3 +147,45 @@ extractTwitterItems = go where
       , niDescription = ""
       , niLink = uri
       } : items
+
+--------------------------------------------------------------------------------
+-- Events from HaskellWiki
+
+-- | Import events from the HaskellWiki template. I'm not sure how
+-- reliable this feed is in general, but it's better than zero event
+-- information.
+
+-- | Import events.
+importEvents :: Model c s (Either String ())
+importEvents = do
+  result <- io $ downloadString "http://www.haskell.org/haskellwiki/index.php?title=Template:Main/Events&printable=yes"
+  case result of
+    Left e -> return (Left (show e))
+    Right str -> do
+      now <- io $ getZonedTime
+      case runSoup (parseTags str) (extractEventItems now) of
+        Left e -> return (Left e)
+        Right items -> do mapM_ (addItem Events) items
+                          return (Right ())
+
+-- | Skip to each tweet and extract the items.
+extractEventItems :: ZonedTime -> Soup [NewItem]
+extractEventItems now = do
+  skipTagByNameClass "div" "mw-content-ltr"
+  go
+
+  where go = do
+          skipTagByName "dl"
+          skipTagByName "dt"
+          tags <- get
+          a <- gotoTagByNameClass "a" "external"
+          link <- getAttrib "href" a
+          uri <- meither "couldn't parse URI" (parseURI link)
+          let title = tagsTxt (takeWhile (not . tagCloseLit "dt") tags)
+          items <- go <|> return []
+          return $ NewItem
+            { niTitle = title
+            , niPublished = now
+            , niDescription = ""
+            , niLink = uri
+            } : items
