@@ -73,7 +73,7 @@ mixedRows now items =
 
 epoch = formatTime defaultTimeLocale "%s"
 
-agoZoned t1 t2 = span ! title (toValue (show t1)) $
+agoZoned t1 t2 = span !. "relative-time" ! dataAttribute "epoch" (toValue (epoch t1)) ! title (toValue (show t1)) $
   toHtml (relativeZoned t1 t2 True)
 
 heading = do
