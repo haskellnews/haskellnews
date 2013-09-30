@@ -40,10 +40,12 @@ importStackOverflow = do
   importGeneric StackOverflow "http://programmers.stackexchange.com/feeds/tag/haskell"
 
 importHaskellWiki =
-  importGeneric HaskellWiki "http://www.haskell.org/haskellwiki/index.php?title=Special:Recentchanges&feed=rss"
+  importGeneric HaskellWiki "http://www.haskell.org/haskellwiki/index.php?title=Special:RecentChanges&feed=rss"
 
 importHackage =
-  importGeneric Hackage "http://hackage.haskell.org/packages/archive/recent.rss"
+    importGeneric Hackage "http://hackage.haskell.org/recent.rss"
+-- Old feed is gone:
+--  importGeneric Hackage "http://hackage.haskell.org/packages/archive/recent.rss"
 
 -- | Import all vimeo content.
 importVimeo = do
@@ -133,7 +135,9 @@ downloadFeed uri = do
   case result of
     Left e -> return (Left (show e))
     Right str -> case parseFeedString str of
-      Nothing -> return (Left ("Unable to parse feed from: " ++ uri))
+      Nothing -> do
+        writeFile "/tmp/feed.xml" str
+        return (Left ("Unable to parse feed from: " ++ uri))
       Just feed -> return (Right feed)
 
 --------------------------------------------------------------------------------
