@@ -124,9 +124,14 @@ makeItem item =
   NewItem <$> extract "item" (getItemTitle item)
           <*> extract "publish date" (getItemPublishDate item >>= parseDate)
           <*> extract "description" (getItemDescription item)
-          <*> extract "link" (getItemLink item >>= parseURI)
+          <*> extract "link" (getItemLink item >>= parseURILeniently)
 
   where extract label = maybe (Left ("Unable to extract " ++ label)) Right
+
+-- | Escape any characters not allowed in URIs because at least one
+-- feed (I'm looking at you, reddit) do not escape characters like ö.
+parseURILeniently :: String -> Maybe URI
+parseURILeniently = parseURI . escapeURIString isAllowedInURI
 
 -- | Download and parse a feed.
 downloadFeed :: String -> IO (Either String Feed)
