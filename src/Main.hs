@@ -5,6 +5,7 @@ module Main where
 import HN.Config
 import HN.Model.Migrations
 import HN.Model.Import
+import HN.Model.Github (importGithubPushes)
 import HN.Server
 import HN.Types
 
@@ -24,6 +25,9 @@ main = do
     "create-version" -> db $ migrate True versions
     "migrate"        -> db $ migrate False versions
     "import"         -> do db importEverything
+                           clearCache config
+    "github"         -> do let auth = configGithubAuth config
+                           db $ importGithubPushes auth "-3600"
                            clearCache config
     _                -> do db $ migrate False versions
                            clearCache config

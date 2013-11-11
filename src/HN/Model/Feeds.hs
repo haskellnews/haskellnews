@@ -124,7 +124,7 @@ importGenerically source uri f = do
 makeItem :: Item -> Either String NewItem
 makeItem item =
   NewItem <$> extract "item" (getItemTitle item)
-          <*> extract "publish date" (getItemPublishDate item >>= parseDate)
+          <*> extract "publish date" (join (getItemPublishDate item))
           <*> extract "description" (getItemDescription item)
           <*> extract "link" (getItemLink item >>= parseURILeniently)
 

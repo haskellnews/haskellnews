@@ -20,6 +20,7 @@ import Network.URI
 import Snap.App.Types
 import Snap.App.Cache
 import Text.Blaze
+import Github.Util (GithubAuth(..))
 
 --------------------------------------------------------------------------------
 -- Basic site types
@@ -31,6 +32,7 @@ data Config = Config
   , configAdmin           :: Address
   , configSiteAddy        :: Address
   , configCacheDir        :: FilePath
+  , configGithubAuth      :: Maybe GithubAuth
   }
 
 instance AppConfig Config where

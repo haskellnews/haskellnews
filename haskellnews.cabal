@@ -34,7 +34,8 @@ executable haskellnews
                        split,
                        tagsoup,
                        filepath,
-                       directory
+                       directory,
+                       github
   hs-source-dirs:      src
   main-is:             Main.hs
   ghc-options:         -Wall -fno-warn-unused-do-bind

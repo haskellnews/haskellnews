@@ -12,3 +12,9 @@ cache = /tmp/hn-cache
 [ADDRESSES]
 admin = chrisdone@gmail.com
 site_addy = noreply@hn.org
+
+[GITHUB]
+# These are optional:
+# user = github user name
+# password = github password
+
