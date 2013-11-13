@@ -1,14 +1,26 @@
+{-# LANGUAGE OverloadedStrings #-}
 module HN.Util where
 
-import Github.Util (GithubAuth(..),formatUTC,handleRateLimit,uniqueRepos)
+import Github.Repos (GithubAuth(..))
 import qualified Github.Data as Github
 import qualified Github.Search as Github
 import Data.List (intercalate)
-import GHC.Exts (sortWith)
-import Data.Maybe (fromMaybe)
+import GHC.Exts (sortWith,groupWith)
+import Data.Maybe (fromMaybe,listToMaybe)
 import System.Locale
 import Data.Time
 import qualified Data.Time.Format as DT
+import qualified Data.Char as C
+import Data.Word (Word8)
+import Text.Printf (printf)
+import Control.Concurrent (threadDelay)
+import qualified Control.Exception as E
+import qualified Data.ByteString as BS
+import Data.Time.Clock.POSIX (utcTimeToPOSIXSeconds)
+import qualified Network.HTTP.Types as W
+import Network.HTTP.Conduit (HttpException(..))
+
+data RateLimit = RateLimit { rateLimitLimit :: Int, rateLimitRemaining :: Int, rateLimitReset :: Int } deriving (Show)
 
 allPages :: Show a => (String -> IO (Either a Github.SearchReposResult)) -> String -> IO [[Github.Repo]]
 allPages q basequery = go Nothing (1::Int) []
@@ -89,3 +101,66 @@ parseTime arg =
     Nothing -> error $ "bad time: " ++ arg
     Just t  -> return t
 
+formatUTC :: UTCTime -> String
+formatUTC t =
+  let local = utcToLocalTime utc t
+      day = localDay local
+      (y,m,d) = toGregorian day
+      localtime = localTimeOfDay local
+      hh = todHour localtime
+      mm = todMin localtime
+      ss = todSec localtime
+   in printf "%d-%02d-%02dT%02d:%02d:%02d" y m d hh mm ((floor ss) :: Int)
+
+uniqueRepos :: [ Github.Repo ] -> [ Github.Repo ]
+uniqueRepos rs =
+  let sorted = sortWith Github.repoHtmlUrl rs
+      grouped = groupWith Github.repoHtmlUrl sorted
+  in map head grouped
+
+handleRateLimit :: IO (Either Github.Error t) -> IO (Either Github.Error t)
+handleRateLimit io = do
+  result <- io
+  case result of
+    Left e  ->
+      case rateLimit e of
+        Nothing -> return result
+        Just rl -> do putStrLn $ "rate limited: " ++ show rl
+                      now <- getCurrentTime
+                      let diff = rateLimitReset rl - (toSecs now)
+                      putStrLn $ "need to sleep for " ++ show diff
+                      sleepSeconds diff
+                      handleRateLimit io
+    _ -> return result
+
+toSecs :: UTCTime -> Int
+toSecs = round . utcTimeToPOSIXSeconds
+
+sleepSeconds :: Int -> IO()
+sleepSeconds n = threadDelay (n*1000000)
+
+-- | return the rate limit details from an error
+rateLimit :: Github.Error -> Maybe RateLimit
+rateLimit e =
+  case e of
+    Github.HTTPConnectionError except ->
+      case E.fromException except of
+        Just (StatusCodeException (W.Status 403 _) headers _) -> Just $ RateLimit limit remaining reset
+          where limit     = findHeader headers "X-RateLimit-Limit"
+                remaining = findHeader headers "X-RateLimit-Remaining"
+                reset     = findHeader headers "X-RateLimit-Reset"
+        _ -> Nothing
+    _ -> Nothing
+
+findHeader :: Eq a => [(a, BS.ByteString)] -> a -> Int
+findHeader hs key =
+  case lookup key hs of
+    Nothing -> 0
+    Just x  -> fromMaybe 0 (maybeRead (map toChar $ BS.unpack x))
+
+toChar :: Word8 -> Char
+toChar = C.chr . fromIntegral
+
+-- | Attempts to parse a value from the front of the string.
+maybeRead :: Read a => String -> Maybe a
+maybeRead = fmap fst . listToMaybe . reads

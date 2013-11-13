@@ -20,7 +20,7 @@ import Network.URI
 import Snap.App.Types
 import Snap.App.Cache
 import Text.Blaze
-import Github.Util (GithubAuth(..))
+import Github.Repos (GithubAuth(..))
 
 --------------------------------------------------------------------------------
 -- Basic site types

@@ -5,7 +5,7 @@ module HN.Model.Github (
 import HN.Monads
 import HN.Types
 import qualified HN.Util as U
-import Github.Util (GithubAuth(..))
+import Github.Repos (GithubAuth(..))
 import qualified Github.Data as G
 import Network.URI (parseURI)
 import qualified Data.Time.LocalTime  as LT

@@ -35,7 +35,9 @@ executable haskellnews
                        tagsoup,
                        filepath,
                        directory,
-                       github
+                       github,
+                       http-types,
+                       http-conduit
   hs-source-dirs:      src
   main-is:             Main.hs
   ghc-options:         -Wall -fno-warn-unused-do-bind

@@ -10,7 +10,7 @@ import Data.ConfigFile
 import Database.PostgreSQL.Simple (ConnectInfo(..))
 import qualified Data.Text as T
 import Network.Mail.Mime
-import Github.Util (GithubAuth(..))
+import Github.Repos (GithubAuth(..))
 import Control.Applicative ((<$>),(<*>))
 import qualified Data.ByteString.Char8 as BS
 
