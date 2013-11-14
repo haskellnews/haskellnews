@@ -2,10 +2,9 @@ An aggregation of all online content related to Haskell.
 
 ## Build notes
 
-You'll need a modified version of the `github` package. A recipe for building with `cabal sandbox`:
+This should work with the latest version of the `github` package maintained by FP Complete:
 
-    git clone https://github.com/erantapaa/github.git
-    (cd github && git checkout hn)
+    git clone https://github.com/fpco/github.git
     cabal sandbox init
     cabal sandbox add-source github
     cabal install --only-dependencies
