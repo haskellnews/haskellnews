@@ -43,9 +43,11 @@ importHaskellWiki =
   importGeneric HaskellWiki "http://www.haskell.org/haskellwiki/index.php?title=Special:RecentChanges&feed=rss"
 
 importHackage =
-    importGeneric Hackage "http://hackage.haskell.org/recent.rss"
+  importGeneric Hackage "http://hackage.haskell.org/packages/recent.rss"
 -- Old feed is gone:
---  importGeneric Hackage "http://hackage.haskell.org/packages/archive/recent.rss"
+-- importGeneric Hackage "http://hackage.haskell.org/recent.rss"
+-- Old feed is gone:
+-- importGeneric Hackage "http://hackage.haskell.org/packages/archive/recent.rss"
 
 -- | Import all vimeo content.
 importVimeo = do
