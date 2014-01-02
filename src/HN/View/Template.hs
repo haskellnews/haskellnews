@@ -11,6 +11,7 @@ template name innerhead innerbody = do
   docType
   html $ do
     head $ do H.title "Haskell News"
+              link ! rel "alternate"  ! type_ "application/rss+xml" ! title "Haskell News Feed" ! href "/feed"
               link ! rel "stylesheet" ! type_ "text/css" ! href "/css/bootstrap.min.css"
               link ! rel "stylesheet" ! type_ "text/css" ! href "/css/bootstrap-responsive.css"
               link ! rel "stylesheet" ! type_ "text/css" ! href "/css/haskellnews.css"
