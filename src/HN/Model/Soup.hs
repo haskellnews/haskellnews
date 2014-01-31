@@ -109,10 +109,22 @@ collectItems = do
 --------------------------------------------------------------------------------
 -- Twitter
 
+-- | Import all "haskell" mentions on twitter.
+importHaskellTwitter :: Model c s (Either String ())
+importHaskellTwitter =
+  importFromTwitter
+    "https://twitter.com/search?q=haskell%20-rugby%20-jewelry%20%23haskell&src=typd"
+
+-- | Import mentions of @haskelltips.
+importHaskellTips :: Model c s (Either String ())
+importHaskellTips =
+  importFromTwitter
+    "https://twitter.com/search?q=%40haskelltips&src=typd"
+
 -- | Import recent Tweets from the search.
-importTwitter :: Model c s (Either String ())
-importTwitter = do
-  result <- io $ downloadString "https://twitter.com/search?q=haskell%20-rugby%20-jewelry%20%23haskell&src=typd"
+importFromTwitter :: String -> Model c s (Either String ())
+importFromTwitter url = do
+  result <- io $ downloadString url
   case result of
     Left e -> return (Left (show e))
     Right str ->
