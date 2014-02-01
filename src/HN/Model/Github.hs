@@ -31,9 +31,9 @@ toZonedTime gd = zt
 repoToItem :: G.Repo -> Maybe NewItem
 repoToItem repo = do
   uri <- parseURI $ G.repoHtmlUrl repo
-  published <- toZonedTime `fmap` G.repoPushedAt repo
+  published <- fmap toZonedTime (return (G.repoCreatedAt repo))
   let title = ownerLogin repo ++ "/" ++ G.repoName repo
-  let descr = fromMaybe "???" $ G.repoDescription repo
+  let descr = fromMaybe "No description" $ G.repoDescription repo
   return $ NewItem title published descr uri
 
 ownerLogin :: G.Repo -> String
@@ -46,6 +46,7 @@ addItem2 source item = do
     then return ()
     else insertItem source item
 
+-- | Uniqueness is determined by only showing new projects.
 itemExists2 :: Source -> NewItem -> Model c s (Bool)
 itemExists2 source item =  do
   exists <- single ["SELECT true"
@@ -63,11 +64,11 @@ itemExists2 source item =  do
 insertItem :: Source -> NewItem -> Model c s ()
 insertItem source item = void $
   exec ["INSERT INTO item"
-           ,"(source,published,title,description,link)"
-           ,"VALUES"
-           ,"(?,?,?,?,?)"]
-           (source
-           ,niPublished item
-           ,niTitle item
-           ,niDescription item
-           ,niLink item)
+       ,"(source,published,title,description,link)"
+       ,"VALUES"
+       ,"(?,?,?,?,?)"]
+       (source
+       ,niPublished item
+       ,niTitle item
+       ,niDescription item
+       ,niLink item)

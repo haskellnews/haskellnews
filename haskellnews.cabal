@@ -28,7 +28,7 @@ executable haskellnews
                        ConfigFile,
                        HUnit,
                        network,
-                       feed,
+                       feed >= 0.3.9.2,
                        old-locale,
                        curl,
                        split,
