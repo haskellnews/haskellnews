@@ -20,14 +20,12 @@ importEverything = void $ do
         ,(importHaskellTips,"importTips")
         ,(importHackage,"importHackage")
         ,(importHaskellWiki,"importHaskellWiki")
-        ,(importGithub,"importGithub")
         ,(importStackOverflow,"importStackOverflow")
         ,(importPlanetHaskell,"importPlanetHaskell")
         ,(importHaskellCafe,"importHaskellCafe")
         ,(importGooglePlus,"importGooglePlus")
         ,(importIrcQuotes,"importIrcQuotes")
         ,(importPastes,"importPastes")
-        ,(importHaskellLive,"importHaskellLive")
         ,(importEvents,"importEvents")]
         $ \(m,op) -> do
           result <- m
