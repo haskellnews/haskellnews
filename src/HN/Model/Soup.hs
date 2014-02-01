@@ -119,7 +119,7 @@ importHaskellTwitter =
 importHaskellTips :: Model c s (Either String ())
 importHaskellTips =
   importFromTwitter
-    "https://twitter.com/search?q=%40haskelltips&src=typd"
+    "https://twitter.com/HaskellTips"
 
 -- | Import recent Tweets from the search.
 importFromTwitter :: String -> Model c s (Either String ())
