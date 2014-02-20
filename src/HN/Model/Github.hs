@@ -51,12 +51,10 @@ itemExists2 :: Source -> NewItem -> Model c s (Bool)
 itemExists2 source item =  do
   exists <- single ["SELECT true"
                    ,"FROM item"
-                   ,"WHERE source = ?"
-                   ,"AND   link = ?"
-                   ,"AND   published = ?"]
+                   ,"WHERE "
+                   ," (source = ? AND link = ?) "]
                    (source
-                   ,niLink item
-                   ,niPublished item)
+                   ,niLink item)
   case exists :: Maybe Bool of
     Just{} -> return True
     Nothing -> return False
