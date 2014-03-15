@@ -157,12 +157,16 @@ instance ToField Source where
 -- Cache key
 
 data CacheKey
-  = Mixed
-  | Grouped
+  = Mixed Bool
+  | Grouped Bool
 
 instance Key CacheKey where
-  keyToString Mixed = "mixed.html"
-  keyToString Grouped = "grouped.html"
+  keyToString (Mixed b) = "mixed-" ++ (if b
+                                          then "embeddable"
+                                          else "full") ++ ".html"
+  keyToString (Grouped b) = "grouped" ++ (if b
+                                             then "embeddable"
+                                             else "full") ++ ".html"
 
 --------------------------------------------------------------------------------
 -- Misc types

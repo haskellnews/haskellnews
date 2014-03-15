@@ -16,19 +16,27 @@ import           Snap.App.RSS
 
 -- | Grouped display.
 grouped :: Controller Config PState ()
-grouped = viewCached Grouped $ do
-  groups <- forM [Reddit,HaskellCafe,StackOverflow,Pastes,Github,PlanetHaskell,GooglePlus,Twitter,Events,Hackage,IrcQuotes,Vimeo,HaskellWiki] $ \source -> do
-    items <- model $ getItemsBySource source 10
-    return (source,items)
-  now <- io getZonedTime
-  return $ V.grouped now groups
+grouped = do
+  embeddable <- getStringMaybe "embeddable"
+  viewCached (Grouped (isJust embeddable)) $ do
+    groups <- forM [Reddit,HaskellCafe,StackOverflow,Github,PlanetHaskell,GooglePlus,Twitter,Events,Hackage,Vimeo,Pastes,HaskellWiki,IrcQuotes] $ \source -> do
+      items <- model $ getItemsBySource source 10
+      return (source,items)
+    now <- io getZonedTime
+    return $ case embeddable of
+               Nothing -> V.grouped now groups
+               Just{} -> V.groupedContent now groups
 
 -- | Mixed display.
 mixed :: Controller Config PState ()
-mixed = viewCached Mixed $ do
-  items <- model $ getItems 100
-  now <- io getZonedTime
-  return $ V.mixed now items
+mixed = do
+  embeddable <- getStringMaybe "embeddable"
+  viewCached (Mixed (isJust embeddable)) $ do
+    items <- model $ getItems 100
+    now <- io getZonedTime
+    return $ case embeddable of
+                Nothing -> V.mixed now items
+                Just{} -> V.mixedContent now items
 
 -- | Output an RSS feed.
 feed :: Controller Config PState ()

@@ -22,23 +22,26 @@ grouped now groups = template "grouped" (return ()) $ do
         ul !. "nav nav-pills" $ do
           li !. "active" $ a "Grouped"
           li $ a ! href "/mixed" $ "Mixed"
-    forM_ (chunksOf 2 groups) $ \items ->
-      row $
-        forM_ items $ \(source,items) ->
-          span6 $ do
-            h2 $ toHtml source
-            table !. "table" $
-              forM_ items $ \item ->
-                tr $ td $ do
-                  a ! href (toValue (show (iLink item))) ! target "_blank" $ toHtml (iTitle item)
-                  " — "
-                  case iSource item of
-                    Github ->
-                      em $ do when (not (T.null (iDescription item))) $ do
-                                toHtml $ iDescription item
-                                br
-                              agoZoned (iPublished item) now
-                    _ -> em $ agoZoned (iPublished item) now
+    groupedContent now groups
+
+groupedContent now groups =
+  forM_ (chunksOf 2 groups) $ \items ->
+    row $
+      forM_ items $ \(source,items) ->
+        span6 $ do
+          h2 $ toHtml source
+          table !. "table" $
+            forM_ items $ \item ->
+              tr $ td $ do
+                a ! href (toValue (show (iLink item))) ! target "_blank" $ toHtml (iTitle item)
+                " — "
+                case iSource item of
+                  Github ->
+                    em $ do when (not (T.null (iDescription item))) $ do
+                              toHtml $ iDescription item
+                              br
+                            agoZoned (iPublished item) now
+                  _ -> em $ agoZoned (iPublished item) now
 
 mixed now items = template "mixed" (return ()) $ do
   container $ do
@@ -48,10 +51,13 @@ mixed now items = template "mixed" (return ()) $ do
         ul !. "nav nav-pills" $ do
           li $ a ! href "/grouped" $ "Grouped"
           li !. "active" $ a "Mixed"
-    row $
-      span12 $
-        table !. "table" $
-          mixedRows now items
+    mixedContent now items
+
+mixedContent now items =
+  do row $
+          span12 $
+            table !. "table" $
+              mixedRows now items
 
 mixedRows now items =
   forM_ items $ \item ->
