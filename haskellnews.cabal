@@ -37,7 +37,8 @@ executable haskellnews
                        directory,
                        github,
                        http-types,
-                       http-conduit
+                       http-conduit,
+                       MonadCatchIO-mtl >= 0.3.1.0
   hs-source-dirs:      src
   main-is:             Main.hs
   ghc-options:         -Wall -fno-warn-unused-do-bind
