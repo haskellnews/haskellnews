@@ -1,0 +1,3 @@
+[submodule "submodules/cgi"]
+	path = submodules/cgi
+	url = https://github.com/jhenahan/haskell-cgi.git
