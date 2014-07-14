@@ -1,9 +1,11 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS -fno-warn-orphans #-}
 
 module HN.Types where
 
+import HN.Blaze
 import HN.Monads
 
 import Control.Applicative
@@ -119,10 +121,13 @@ sourceMapping =
   ]
 
 instance ToMarkup Source where
-  toMarkup = toMarkup . sourceToString
+  toMarkup s =
+    a ! href (toValue $ sourceToUrl s) ! target "_blank" $ toHtml (sourceToString s)
+
 instance ToValue Source where
   toValue = toValue . sourceToString
 
+sourceToString :: Source -> String
 sourceToString i =
     case i of
       Reddit -> "Reddit"
@@ -140,6 +145,26 @@ sourceToString i =
       Pastes -> "Pastes"
       HaskellLive -> "Haskell Live"
       Events -> "Events"
+
+sourceToUrl :: Source -> String
+sourceToUrl i =
+    case i of
+      Reddit -> "https://pay.reddit.com/r/haskell"
+      Vimeo -> "http://vimeo.com/channels/haskell" -- TODO: Also Galois
+      Twitter -> "https://twitter.com/search?q=haskell%20-rugby%20-jewelry%20%23haskell&src=typd"
+      Hackage -> "https://hackage.haskell.org/packages/recent"
+      HaskellWiki -> "https://www.haskell.org/haskellwiki/Special:RecentChanges"
+      Github -> "https://github.com/trending?l=haskell" -- TODO: This isn't the same thing
+      StackOverflow -> "http://stackoverflow.com/questions/tagged/haskell?sort=newest"
+      Jobs -> "http://www.haskellers.com/jobs"
+      PlanetHaskell -> "https://planet.haskell.org/"
+      HaskellCafe -> "https://groups.google.com/forum/#!forum/haskell-cafe"
+      GooglePlus -> "https://plus.google.com/communities/104818126031270146189"
+      IrcQuotes -> "http://ircbrowse.net/haskell"
+      Pastes -> "http://lpaste.net/browse"
+      HaskellLive -> "http://haskelllive.com/"
+      Events -> "https://www.haskell.org/haskellwiki/Template:Main/Events"
+
 
 instance FromField Source where
   fromField f s = do
