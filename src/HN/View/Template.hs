@@ -15,6 +15,7 @@ template name innerhead innerbody = do
               link ! rel "stylesheet" ! type_ "text/css" ! href "/css/bootstrap.min.css"
               link ! rel "stylesheet" ! type_ "text/css" ! href "/css/bootstrap-responsive.css"
               link ! rel "stylesheet" ! type_ "text/css" ! href "/css/haskellnews.css"
+              meta ! A.name "viewport" ! content "width=device-width, user-scalable=no"
               meta ! httpEquiv "Content-Type" ! content "text/html; charset=UTF-8"
               innerhead
               meta ! A.name "description" ! content "An aggregation of all online content related to Haskell, including Google+, Reddit, Twitter, GitHub, HaskellWiki, Stack Overflow, Planet Haskell, Hackage, ..."
