@@ -1,7 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 module HN.Util where
-
-import Github.Repos (GithubAuth(..))
+import Github.Auth (GithubAuth(..))
 import qualified Github.Data as Github
 import qualified Github.Search as Github
 import Data.List (intercalate)
@@ -58,7 +57,7 @@ formatRepo r =
   let fields = [ ("Name", Github.repoName)
                  ,("URL",  Github.repoHtmlUrl)
                  ,("Description", orEmpty . Github.repoDescription)
-                 ,("Created-At", formatDate . Github.repoCreatedAt)
+                 ,("Created-At", formatMaybeDate . Github.repoCreatedAt)
                  ,("Pushed-At", formatMaybeDate . Github.repoPushedAt)
                ]
   in intercalate "\n" $ map fmt fields
@@ -82,7 +81,7 @@ formatMaybeDate = maybe "???" formatDate
 formatDate :: Github.GithubDate -> String
 formatDate = show . Github.fromGithubDate
 
-pushedRepos :: Maybe Github.GithubAuth -> String -> UTCTime -> IO [ Github.Repo ]
+pushedRepos :: Maybe GithubAuth -> String -> UTCTime -> IO [ Github.Repo ]
 pushedRepos auth language t = do
   results <- allPages (doQuery auth) (baseQuery language "pushed" t)
   let repos = sortWith Github.repoPushedAt (uniqueRepos $ concat $ results)
