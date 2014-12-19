@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module HN.Util where
 
-import Github.Repos (GithubAuth(..))
+import Github.Auth as Github (GithubAuth(..))
 import qualified Github.Data as Github
 import qualified Github.Search as Github
 import Data.List (intercalate)
@@ -58,7 +58,7 @@ formatRepo r =
   let fields = [ ("Name", Github.repoName)
                  ,("URL",  Github.repoHtmlUrl)
                  ,("Description", orEmpty . Github.repoDescription)
-                 ,("Created-At", formatDate . Github.repoCreatedAt)
+                 ,("Created-At", formatMaybeDate . Github.repoCreatedAt)
                  ,("Pushed-At", formatMaybeDate . Github.repoPushedAt)
                ]
   in intercalate "\n" $ map fmt fields

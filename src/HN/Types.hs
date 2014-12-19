@@ -22,7 +22,7 @@ import Network.URI
 import Snap.App.Types
 import Snap.App.Cache
 import Text.Blaze
-import Github.Repos (GithubAuth(..))
+import Github.Auth as Github (GithubAuth(..))
 
 --------------------------------------------------------------------------------
 -- Basic site types

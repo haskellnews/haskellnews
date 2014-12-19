@@ -12,7 +12,7 @@ cabal-version:       >=1.8
 
 executable haskellnews
   build-depends:       base >=4 && < 5,
-                       snap-app >= 0.6.0,
+                       snap-app == 0.6.0,
                        blaze-html   >= 0.6,
                        blaze-markup >= 0.5,
                        snap-server,
@@ -27,7 +27,7 @@ executable haskellnews
                        time,
                        ConfigFile,
                        HUnit,
-                       network,
+                       network==2.5.0.0,
                        feed >= 0.3.9.2,
                        old-locale,
                        curl,
@@ -38,7 +38,8 @@ executable haskellnews
                        github,
                        http-types,
                        http-conduit,
-                       MonadCatchIO-mtl >= 0.3.1.0
+                       MonadCatchIO-mtl >= 0.3.1.0,
+                       cgi >= 3001.2.2.0
   hs-source-dirs:      src
   main-is:             Main.hs
   ghc-options:         -Wall -fno-warn-unused-do-bind
