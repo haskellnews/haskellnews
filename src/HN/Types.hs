@@ -92,6 +92,7 @@ data Source
   | Jobs
   | PlanetHaskell
   | HaskellCafe
+  | HaskellCafeNative
   | GooglePlus
   | IrcQuotes
   | Pastes
@@ -116,6 +117,7 @@ sourceMapping =
   ,(Pastes,13)
   ,(HaskellLive,14)
   ,(Events,15)
+  ,(HaskellCafeNative,16)
   ]
 
 instance ToMarkup Source where
@@ -138,6 +140,7 @@ sourceToString i =
       Jobs -> "Jobs"
       PlanetHaskell -> "Planet Haskell"
       HaskellCafe -> "Haskell-Cafe"
+      HaskellCafeNative -> "Haskell-Cafe"
       GooglePlus -> "Google+"
       IrcQuotes -> "IRC Quotes"
       Pastes -> "Pastes"
@@ -157,6 +160,7 @@ sourceToUrl i =
       Jobs -> "http://www.haskellers.com/jobs"
       PlanetHaskell -> "https://planet.haskell.org/"
       HaskellCafe -> "https://groups.google.com/forum/#!forum/haskell-cafe"
+      HaskellCafeNative -> "https://mail.haskell.org/pipermail/haskell-cafe/"
       GooglePlus -> "https://plus.google.com/communities/104818126031270146189?hl=en"
       IrcQuotes -> "http://ircbrowse.net/haskell"
       Pastes -> "http://lpaste.net/browse"
