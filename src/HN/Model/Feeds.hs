@@ -8,6 +8,8 @@ import HN.Model.Items
 import HN.Types
 import HN.Curl
 
+import HN.Model.Mailman (importMailman)
+
 import Control.Applicative
 import Network.URI
 import Snap.App
@@ -23,6 +25,17 @@ importHaskellCafe = do
   importGenerically HaskellCafe
                     "https://groups.google.com/forum/feed/haskell-cafe/msgs/rss_v2_0.xml"
                     (\item -> return (item { niTitle = strip (niTitle item) }))
+
+  where strip x | isPrefixOf "re: " (map toLower x) = strip (drop 4 x)
+                | isPrefixOf label x = drop (length label) x
+                | otherwise = x
+        label = "[Haskell-cafe]"
+
+importHaskellCafeNative =
+  importMailman HaskellCafe
+                50
+                "https://mail.haskell.org/pipermail/haskell-cafe" 
+                (\item -> return (item { niTitle = strip (niTitle item) }))
 
   where strip x | isPrefixOf "re: " (map toLower x) = strip (drop 4 x)
                 | isPrefixOf label x = drop (length label) x

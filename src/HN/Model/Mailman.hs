@@ -4,49 +4,109 @@
 -- and https://github.com/haskell-infra/hl/issues/63#issuecomment-74420850
 
 {-# language OverloadedStrings #-}
+{-# language BangPatterns #-}
 
 module HN.Model.Mailman where
 
-import HN.Curl
 
--- import Text.Feed.Import
--- import Text.Feed.Query
+import HN.Model.Items
+
+import Network.HTTP.Conduit
+-- I tried with
+-- import HN.Curl
+-- but could not get it to work reliably:
+-- segfaults, badcertfile, and other erratic behaviour
+-- on opening the second HTTPS connection.
+
 import Text.Feed.Types
+import Text.Feed.Constructor
 
 import qualified Text.HTML.DOM
 import Text.XML
 import Text.XML.Cursor
-
-import qualified Data.ByteString.Lazy as BS
-import qualified Data.ByteString.Lazy.Char8 as C
-
-import Network.URI
-
-import System.IO
+import qualified Data.Text as T 
 
 test1 = do
-  downloadFeed "https://mail.haskell.org/pipermail/libraries/"
+  downloadFeed 10 "https://mail.haskell.org/pipermail/libraries/"
+
+importMailman :: Int -> Source -> String -> (NewItem -> Maybe NewItem) -> Model c s (Either String ())
+importMailman its source uri f = do
+  result <- io $ downloadFeed its uri
+  case result >>= mapM (fmap f . makeItem) . feedItems of
+    Left e -> do
+      return (Left e)
+    Right items -> do
+      mapM_ (addItem source) (catMaybes items)
+      return (Right ())
 
 -- | look at archive and produce a feed.
-downloadFeed :: String -> IO (Either String Feed)
-downloadFeed uri = do
-  result <- downloadString uri
+-- 1st argument is (max.) number of items to produce.
+-- 2st argument is "base name" of archive, e.g.
+-- "https://mail.haskell.org/pipermail/libraries/"
+-- it should end with "/"
+downloadFeed :: Int -> String -> IO (Either String Feed)
+downloadFeed its uri= do
+  result <- getDoc uri
   case result of
-    Left e -> return (Left (show e))
-{-
-    Right str -> case parseFeedString str of
-      Nothing -> do
-        writeFile "/tmp/feed.xml" str
-        return (Left ("Unable to parse feed from: " ++ uri))
-      Just feed -> return (Right feed)
--}
-    Right str -> do
-      -- hPutStrLn stderr $ str
-      let doc = Text.HTML.DOM.parseLBS $ C.pack str
-      -- hPutStrLn stderr $ show doc
+    Left err -> return $ Left err
+    Right doc -> do
       let cursor = fromDocument doc
-      let entries = descendant cursor >>= element "td"
-                    >>= descendant >>= content
-      mapM_ print $ entries 
-      
-      return $ Right  $ XMLFeed undefined
+      let entries = descendant cursor
+                    >>= element "A"
+                    >>= laxAttribute "href"
+          dates = filter (T.isSuffixOf "date.html" ) entries 
+      items <- getItems its uri $ take 1 dates
+      -- mapM_ print items
+      let feed0 = newFeed (RSSKind Nothing)
+          feed = foldr addItem feed0 items
+      print feed    
+      return $ Right feed
+
+getDoc uri = do
+  -- hPutStrLn stderr $ unwords ["getDoc", uri]  
+  result <- simpleHttp uri
+  return $ Right $ Text.HTML.DOM.parseLBS result
+
+getItems :: Int -> String -> [T.Text] -> IO [Item]
+getItems its uri dates =
+  if its <= 0 then return []
+  else case dates of
+    [] -> return []
+    d:ates -> do
+      result <- getDoc $ uri ++ T.unpack d
+      let items = case result of
+            Left err -> []
+            Right doc ->
+              let cursor = fromDocument doc
+                  fetch desc = descendant cursor
+                    >>= element "b"
+                    >>= hasChildContents desc
+                    >>= followingSibling
+                    >>= element "i" >>= child >>= content
+                  starting = fetch "Starting:"
+                  ending   = fetch "Ending:"
+              in  descendant cursor
+                  >>= element "A"
+                  >>= hasAttribute "HREF"
+                  >>= parent
+                  >>= element "LI"
+                  >>= mkItem uri (starting,ending)
+      later <- getItems (its - length items) uri ates
+      return $ take its $ reverse items ++ later
+
+hasChildContents desc =
+  check $ \ c -> desc == T.concat (child c >>= content )
+        
+mkItem uri (starting,ending) c = do
+  href <- child c >>= element "A" >>= laxAttribute "HREF"
+  title <- child c >>= element "A" >>= hasAttribute "HREF"
+           >>= child >>= content
+  author <- child c >>= element "I" >>= child >>= content
+  let unpack = T.unpack . T.unwords . T.words 
+  return $ withItemLink (uri ++ T.unpack href)
+         $ withItemTitle (unpack title)
+         $ withItemAuthor (unpack author)
+         $ case ending of
+                [] -> id
+                en:ding -> withItemPubDate (T.unpack en)
+         $ newItem (RSSKind Nothing)
