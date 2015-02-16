@@ -39,7 +39,10 @@ executable haskellnews
                        http-types,
                        http-conduit,
                        MonadCatchIO-mtl >= 0.3.1.0,
-                       cgi >= 3001.2.2.0
+                       cgi >= 3001.2.2.0,
+                       http-conduit,
+                       xml-conduit,
+                       html-conduit 
   hs-source-dirs:      src
   main-is:             Main.hs
   ghc-options:         -Wall -fno-warn-unused-do-bind

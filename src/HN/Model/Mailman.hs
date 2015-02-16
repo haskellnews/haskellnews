@@ -8,9 +8,6 @@
 
 module HN.Model.Mailman where
 
-
-import HN.Model.Items
-
 import Network.HTTP.Conduit
 -- I tried with
 -- import HN.Curl
@@ -29,15 +26,6 @@ import qualified Data.Text as T
 test1 = do
   downloadFeed 10 "https://mail.haskell.org/pipermail/libraries/"
 
-importMailman :: Int -> Source -> String -> (NewItem -> Maybe NewItem) -> Model c s (Either String ())
-importMailman its source uri f = do
-  result <- io $ downloadFeed its uri
-  case result >>= mapM (fmap f . makeItem) . feedItems of
-    Left e -> do
-      return (Left e)
-    Right items -> do
-      mapM_ (addItem source) (catMaybes items)
-      return (Right ())
 
 -- | look at archive and produce a feed.
 -- 1st argument is (max.) number of items to produce.

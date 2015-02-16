@@ -8,7 +8,7 @@ import HN.Model.Items
 import HN.Types
 import HN.Curl
 
-import HN.Model.Mailman (importMailman)
+import qualified HN.Model.Mailman (downloadFeed)
 
 import Control.Applicative
 import Network.URI
@@ -32,9 +32,9 @@ importHaskellCafe = do
         label = "[Haskell-cafe]"
 
 importHaskellCafeNative =
-  importMailman HaskellCafe
-                50
-                "https://mail.haskell.org/pipermail/haskell-cafe" 
+  importMailman 50
+                HaskellCafe
+                "https://mail.haskell.org/pipermail/haskell-cafe/" 
                 (\item -> return (item { niTitle = strip (niTitle item) }))
 
   where strip x | isPrefixOf "re: " (map toLower x) = strip (drop 4 x)
@@ -122,6 +122,16 @@ importGeneric source uri = do
 importGenerically :: Source -> String -> (NewItem -> Maybe NewItem) -> Model c s (Either String ())
 importGenerically source uri f = do
   result <- io $ downloadFeed uri
+  case result >>= mapM (fmap f . makeItem) . feedItems of
+    Left e -> do
+      return (Left e)
+    Right items -> do
+      mapM_ (addItem source) (catMaybes items)
+      return (Right ())
+
+importMailman :: Int -> Source -> String -> (NewItem -> Maybe NewItem) -> Model c s (Either String ())
+importMailman its source uri f = do
+  result <- io $ HN.Model.Mailman.downloadFeed its uri
   case result >>= mapM (fmap f . makeItem) . feedItems of
     Left e -> do
       return (Left e)
