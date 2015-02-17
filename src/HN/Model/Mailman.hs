@@ -26,6 +26,7 @@ import qualified Data.Text as T
 import Data.Time.Format
 import Data.Time.LocalTime ( ZonedTime )
 import System.Locale ( rfc822DateFormat, defaultTimeLocale )
+import Data.Char (isDigit)
 
 test1 = do
   downloadFeed 10 "https://mail.haskell.org/pipermail/libraries/"
@@ -46,7 +47,7 @@ downloadFeed its uri= do
       let entries = descendant cursor
                     >>= element "A"
                     >>= laxAttribute "href"
-          dates = filter (T.isSuffixOf "date.html" ) entries
+          dates = filter (T.isSuffixOf "thread.html" ) entries
           archivedon = fetch_date cursor "Archived on:"
       items <- getItems its uri $ take 1 dates
       let pubdate = case archivedon of
@@ -82,7 +83,7 @@ getItems its uri dates =
                   >>= hasAttribute "HREF"
                   >>= parent
                   >>= element "LI"
-                  >>= mkItem uri (dropSuffix "date.html" d ) (starting,ending)
+                  >>= mkItem uri (dropSuffix "thread.html" d ) (starting,ending)
       later <- getItems (its - length items) uri ates
       return $ take its $ reverse items ++ later
 
@@ -112,6 +113,17 @@ mkItem uri d (starting,ending) c = do
   title <- child c >>= element "A" >>= hasAttribute "HREF"
            >>= child >>= content
   author <- child c >>= element "I" >>= child >>= content
+
+  -- UGLY date hack. The information looks like this:
+  -- NodeComment "2 01424167545.118214-01424175253.118215-01424184970.118219- "
+  -- and we need to get to this part: --------------------^^^^^^^^^^^
+  -- which gives the epoch time of the current message
+  NodeComment com <- map node ( precedingSibling c >>= precedingSibling )
+  let (s,t) = T.breakOnEnd "." com
+      n = T.reverse $ T.takeWhile isDigit $ T.drop 1 $ T.reverse s
+      
+  
+  
   let unpack = T.unpack . T.unwords . T.words
   return $ withItemLink (uri ++ T.unpack d ++ T.unpack href)
          $ withItemTitle (unpack title)
