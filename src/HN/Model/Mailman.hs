@@ -23,6 +23,10 @@ import Text.XML
 import Text.XML.Cursor
 import qualified Data.Text as T 
 
+import Data.Time.Format
+import Data.Time.LocalTime ( ZonedTime )
+import System.Locale ( rfc822DateFormat, defaultTimeLocale )
+
 test1 = do
   downloadFeed 10 "https://mail.haskell.org/pipermail/libraries/"
 
@@ -42,12 +46,17 @@ downloadFeed its uri= do
       let entries = descendant cursor
                     >>= element "A"
                     >>= laxAttribute "href"
-          dates = filter (T.isSuffixOf "date.html" ) entries 
+          dates = filter (T.isSuffixOf "date.html" ) entries
+          archivedon = fetch_date cursor "Archived on:"
       items <- getItems its uri $ take 1 dates
+      let pubdate = case archivedon of
+            [] -> "Tue Feb 17 18:55:05 UTC 2015"
+            d : _ -> d
       -- mapM_ print items
       let feed0 = newFeed (RSSKind Nothing)
-          feed = foldr addItem feed0 items
-      print feed    
+          feed = withFeedPubDate pubdate
+               $ foldr addItem feed0 items
+      -- print feed    
       return $ Right feed
 
 getDoc uri = do
@@ -66,35 +75,51 @@ getItems its uri dates =
             Left err -> []
             Right doc ->
               let cursor = fromDocument doc
-                  fetch desc = descendant cursor
-                    >>= element "b"
-                    >>= hasChildContents desc
-                    >>= followingSibling
-                    >>= element "i" >>= child >>= content
-                  starting = fetch "Starting:"
-                  ending   = fetch "Ending:"
+                  starting = fetch_date cursor "Starting:"
+                  ending   = fetch_date cursor "Ending:"
               in  descendant cursor
                   >>= element "A"
                   >>= hasAttribute "HREF"
                   >>= parent
                   >>= element "LI"
-                  >>= mkItem uri (starting,ending)
+                  >>= mkItem uri (dropSuffix "date.html" d ) (starting,ending)
       later <- getItems (its - length items) uri ates
       return $ take its $ reverse items ++ later
+
+dropSuffix suf s =
+  if T.isSuffixOf suf s
+  then T.take (T.length s - T.length suf) s
+  else s
+
+fetch_date cursor desc = do
+  d <- fetch cursor desc
+  -- we get this from mailman "Tue Feb 17 18:55:05 UTC 2015"
+  -- and apparently we need "Tue, 17 Feb 2015 21:12:55 UTC"
+  t <- maybe [] return $ parseTime defaultTimeLocale "%a %b %d %H:%M:%S %Z %Y" $ T.unpack d
+  return $ formatTime defaultTimeLocale rfc822DateFormat ( t :: ZonedTime )
+
+fetch cursor desc = descendant cursor
+                    >>= element "b"
+                    >>= hasChildContents desc
+                    >>= followingSibling
+                    >>= element "i" >>= child >>= content
 
 hasChildContents desc =
   check $ \ c -> desc == T.concat (child c >>= content )
         
-mkItem uri (starting,ending) c = do
+mkItem uri d (starting,ending) c = do
   href <- child c >>= element "A" >>= laxAttribute "HREF"
   title <- child c >>= element "A" >>= hasAttribute "HREF"
            >>= child >>= content
   author <- child c >>= element "I" >>= child >>= content
-  let unpack = T.unpack . T.unwords . T.words 
-  return $ withItemLink (uri ++ T.unpack href)
+  let unpack = T.unpack . T.unwords . T.words
+  return $ withItemLink (uri ++ T.unpack d ++ T.unpack href)
          $ withItemTitle (unpack title)
+         $ withItemDescription (unpack title)
          $ withItemAuthor (unpack author)
          $ case ending of
                 [] -> id
-                en:ding -> withItemPubDate (T.unpack en)
+                -- FIXME: we put some date here,
+                en:ding -> withItemPubDate en
          $ newItem (RSSKind Nothing)
+

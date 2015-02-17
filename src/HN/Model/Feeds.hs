@@ -147,7 +147,7 @@ makeItem item =
           <*> extract "description" (getItemDescription item)
           <*> extract "link" (getItemLink item >>= parseURILeniently)
 
-  where extract label = maybe (Left ("Unable to extract " ++ label)) Right
+  where extract label = maybe (Left ("Unable to extract " ++ label ++ " for " ++ show item)) Right
 
 -- | Escape any characters not allowed in URIs because at least one
 -- feed (I'm looking at you, reddit) do not escape characters like ö.
