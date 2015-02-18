@@ -29,13 +29,13 @@ import System.Locale ( rfc822DateFormat, defaultTimeLocale )
 import Data.Char (isDigit)
 
 test1 = do
-  downloadFeed 10 "https://mail.haskell.org/pipermail/libraries/"
+  downloadFeed 10 "https://mail.haskell.org/pipermail/haskell-cafe/"
 
 
 -- | look at archive and produce a feed.
--- 1st argument is (max.) number of items to produce.
+-- 1st argument is minimal number of items to produce.
 -- 2st argument is "base name" of archive, e.g.
--- "https://mail.haskell.org/pipermail/libraries/"
+-- "https://mail.haskell.org/pipermail/haskell-cafe/"
 -- it should end with "/"
 downloadFeed :: Int -> String -> IO (Either String Feed)
 downloadFeed its uri= do
@@ -55,7 +55,8 @@ downloadFeed its uri= do
             d : _ -> d
       -- mapM_ print items
       let feed0 = newFeed (RSSKind Nothing)
-          feed = withFeedPubDate pubdate
+          feed = id
+               $ withFeedPubDate pubdate
                $ foldr addItem feed0 items
       -- print feed    
       return $ Right feed
@@ -65,6 +66,9 @@ getDoc uri = do
   result <- simpleHttp uri
   return $ Right $ Text.HTML.DOM.parseLBS result
 
+-- | get at least @its@ items (since we cannot easily sort by time here,
+-- we get the full month, and if it contains less that @its@ messages,
+-- we get the previous month as well, etc.)
 getItems :: Int -> String -> [T.Text] -> IO [Item]
 getItems its uri dates =
   if its <= 0 then return []
@@ -76,16 +80,14 @@ getItems its uri dates =
             Left err -> []
             Right doc ->
               let cursor = fromDocument doc
-                  starting = fetch_date cursor "Starting:"
-                  ending   = fetch_date cursor "Ending:"
               in  descendant cursor
                   >>= element "A"
                   >>= hasAttribute "HREF"
                   >>= parent
                   >>= element "LI"
-                  >>= mkItem uri (dropSuffix "thread.html" d ) (starting,ending)
+                  >>= mkItem uri (dropSuffix "thread.html" d ) 
       later <- getItems (its - length items) uri ates
-      return $ take its $ reverse items ++ later
+      return $ items ++ later
 
 dropSuffix suf s =
   if T.isSuffixOf suf s
@@ -108,7 +110,7 @@ fetch cursor desc = descendant cursor
 hasChildContents desc =
   check $ \ c -> desc == T.concat (child c >>= content )
         
-mkItem uri d (starting,ending) c = do
+mkItem uri d c = do
   href <- child c >>= element "A" >>= laxAttribute "HREF"
   title <- child c >>= element "A" >>= hasAttribute "HREF"
            >>= child >>= content
@@ -121,17 +123,13 @@ mkItem uri d (starting,ending) c = do
   NodeComment com <- map node ( precedingSibling c >>= precedingSibling )
   let (s,t) = T.breakOnEnd "." com
       n = T.reverse $ T.takeWhile isDigit $ T.drop 1 $ T.reverse s
-      
-  
-  
+      Just pubdate = parseTime defaultTimeLocale "%s" $ T.unpack n
+      pubdateString = formatTime defaultTimeLocale rfc822DateFormat ( pubdate :: ZonedTime )
   let unpack = T.unpack . T.unwords . T.words
   return $ withItemLink (uri ++ T.unpack d ++ T.unpack href)
          $ withItemTitle (unpack title)
          $ withItemDescription (unpack title)
          $ withItemAuthor (unpack author)
-         $ case ending of
-                [] -> id
-                -- FIXME: we put some date here,
-                en:ding -> withItemPubDate en
+         $ withItemPubDate pubdateString
          $ newItem (RSSKind Nothing)
 
