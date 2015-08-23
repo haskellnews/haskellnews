@@ -38,6 +38,7 @@ importJobs =
 importStackOverflow = do
   importGeneric StackOverflow "http://stackoverflow.com/feeds/tag/haskell"
   importGeneric StackOverflow "http://programmers.stackexchange.com/feeds/tag/haskell"
+  importGeneric StackOverflow "http://codereview.stackexchange.com/feeds/tag/haskell"
 
 importHaskellWiki =
   importGeneric HaskellWiki "http://www.haskell.org/haskellwiki/index.php?title=Special:RecentChanges&feed=rss"
