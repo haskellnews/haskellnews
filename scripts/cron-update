@@ -1,6 +1,5 @@
 cd $1
 logger -t haskellnews "Importing github ..."
-dist/build/haskellnews/haskellnews haskellnews.conf github
+/home/chris/.local/bin/haskellnews haskellnews.conf github
 logger -t haskellnews "Importing latest data ..."
-dist/build/haskellnews/haskellnews haskellnews.conf import
-
+/home/chris/.local/bin/haskellnews haskellnews.conf import

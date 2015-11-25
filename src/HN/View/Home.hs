@@ -12,7 +12,6 @@ import           Data.List.Split
 import qualified Data.Text as T
 import           Data.Time.Relative
 import           Network.URI
-import           System.Locale
 
 grouped now groups = template "grouped" (return ()) $ do
   container $ do

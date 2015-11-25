@@ -13,4 +13,4 @@ do
     fi
 done
 
-dist/build/haskellnews/haskellnews haskellnews.conf 2> /dev/null & disown
+/home/chris/.local/bin/haskellnews haskellnews.conf 2> /dev/null & disown

@@ -12,9 +12,9 @@ cabal-version:       >=1.8
 
 executable haskellnews
   build-depends:       base >=4 && < 5,
-                       snap-app >= 0.6.0,
-                       blaze-html   >= 0.6,
-                       blaze-markup >= 0.5,
+                       snap-app,
+                       blaze-html,
+                       blaze-markup,
                        snap-server,
                        snap-core,
                        utf8-string,
@@ -27,7 +27,7 @@ executable haskellnews
                        time,
                        ConfigFile,
                        HUnit,
-                       network,
+                       network,network-uri,
                        feed >= 0.3.9.2,
                        old-locale,
                        curl,
@@ -38,7 +38,37 @@ executable haskellnews
                        github,
                        http-types,
                        http-conduit,
-                       MonadCatchIO-mtl >= 0.3.1.0
+                       MonadCatchIO-mtl
   hs-source-dirs:      src
   main-is:             Main.hs
   ghc-options:         -Wall -fno-warn-unused-do-bind
+  default-extensions: FlexibleContexts
+  other-modules:
+    Control.Monad.IO
+    Data.String.Extra
+    Data.Time.Relative
+    HN.Blaze
+    HN.Config
+    HN.Controllers
+    HN.Curl
+    HN.Data
+    HN.Model
+    HN.Model.Feeds
+    HN.Model.Github
+    HN.Model.Import
+    HN.Model.Items
+    HN.Model.Migrations
+    HN.Model.Soup
+    HN.Monads
+    HN.Prelude
+    HN.Server
+    HN.System
+    HN.Types
+    HN.Util
+    HN.View
+    HN.View.Home
+    HN.View.Template
+    TagSoup
+    Text.Blaze.Bootstrap
+    Text.Blaze.Linkify
+    Text.Links

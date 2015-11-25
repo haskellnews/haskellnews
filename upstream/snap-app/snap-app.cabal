@@ -1,0 +1,41 @@
+name:                snap-app
+version:             0.6.0
+synopsis:            Simple modules for writing apps with Snap, abstracted from hpaste.
+homepage:            https://github.com/chrisdone/snap-app
+license:             BSD3
+license-file:        LICENSE
+author:              Chris Done
+maintainer:          chrisdone@gmail.com
+category:            Web
+build-type:          Simple
+cabal-version:       >=1.8
+
+library
+  ghc-options:       -O2 -Wall -fno-warn-type-defaults
+  hs-source-dirs:    src
+  exposed-modules:   Snap.App, Snap.App.Types, Snap.App.Controller, Snap.App.Model, Snap.App.Migrate,
+                     Snap.App.Cache, Snap.App.XML, Snap.App.RSS,
+                     Data.Pagination, Text.Blaze.Extra, Text.Blaze.Pagination,
+                     Control.Monad.Env, Data.Monoid.Operator,
+                     Network.URI.Params
+  other-modules:     Control.Monad.Catch
+  build-depends:     base >= 4 && <5,
+                     snap-core,
+                     network-uri,
+                     postgresql-simple,
+                     mtl,
+                     blaze-html >= 0.6,
+                     blaze-markup >= 0.5,
+                     safe,
+                     text,
+                     utf8-string,
+                     bytestring,
+                     MonadCatchIO-transformers,
+                     cgi,
+                     data-default,
+                     filepath,
+                     directory,
+                     feed,
+                     xml,
+                     old-locale,
+                     time

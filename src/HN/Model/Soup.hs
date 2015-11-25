@@ -16,7 +16,7 @@ import Control.Monad.Error
 import Data.Time
 import Network.URI
 import Snap.App
-import System.Locale
+
 import Text.HTML.TagSoup
 import Text.HTML.TagSoup.Match
 import TagSoup

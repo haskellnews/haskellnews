@@ -5,7 +5,7 @@ module HN.Model.Github (
 import HN.Monads
 import HN.Types
 import qualified HN.Util as U
-import Github.Repos (GithubAuth(..))
+import Github.Auth (GithubAuth(..))
 import qualified Github.Data as G
 import Network.URI (parseURI)
 import qualified Data.Time.LocalTime  as LT
@@ -31,7 +31,7 @@ toZonedTime gd = zt
 repoToItem :: G.Repo -> Maybe NewItem
 repoToItem repo = do
   uri <- parseURI $ G.repoHtmlUrl repo
-  published <- fmap toZonedTime (return (G.repoCreatedAt repo))
+  published <- fmap toZonedTime (G.repoCreatedAt repo)
   let title = ownerLogin repo ++ "/" ++ G.repoName repo
   let descr = fromMaybe "No description" $ G.repoDescription repo
   return $ NewItem title published descr uri

@@ -13,7 +13,7 @@ import Data.List
 import Data.Maybe
 import Data.Time
 import Network.URI
-import System.Locale
+
 import Text.HTML.TagSoup
 import Text.HTML.TagSoup.Match
 

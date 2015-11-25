@@ -1,13 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 module HN.Util where
 
-import Github.Repos (GithubAuth(..))
+import Github.Auth as Github (GithubAuth(..))
 import qualified Github.Data as Github
 import qualified Github.Search as Github
 import Data.List (intercalate)
 import GHC.Exts (sortWith,groupWith)
 import Data.Maybe (fromMaybe,listToMaybe)
-import System.Locale
+
 import Data.Time
 import qualified Data.Time.Format as DT
 import qualified Data.Char as C
@@ -48,7 +48,7 @@ allPages q basequery = go Nothing (1::Int) []
 baseQuery :: String -> String  -> UTCTime -> String
 baseQuery language field utcTime =
   let date = formatUTC utcTime
-  in "q=" ++ "language%3A" ++ language ++ " " ++ field ++ "%3A>" ++ date 
+  in "q=" ++ "language%3A" ++ language ++ " " ++ field ++ "%3A>" ++ date
 
 doQuery :: Maybe GithubAuth -> String -> IO (Either Github.Error Github.SearchReposResult)
 doQuery auth query = handleRateLimit $ Github.searchRepos' auth query
@@ -58,7 +58,7 @@ formatRepo r =
   let fields = [ ("Name", Github.repoName)
                  ,("URL",  Github.repoHtmlUrl)
                  ,("Description", orEmpty . Github.repoDescription)
-                 ,("Created-At", formatDate . Github.repoCreatedAt)
+                 ,("Created-At", formatMaybeDate . Github.repoCreatedAt)
                  ,("Pushed-At", formatMaybeDate . Github.repoPushedAt)
                ]
   in intercalate "\n" $ map fmt fields
@@ -88,7 +88,7 @@ pushedRepos auth language t = do
   let repos = sortWith Github.repoPushedAt (uniqueRepos $ concat $ results)
   return repos
 
-parseTime :: String -> IO UTCTime 
+parseTime :: String -> IO UTCTime
 parseTime arg@('-':_) = do
   let delta = read arg :: Integer
   now <- getCurrentTime

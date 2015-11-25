@@ -9,7 +9,7 @@ module Data.Time.Show
   where
   
 import Data.Time     (FormatTime,formatTime)
-import System.Locale (defaultTimeLocale)
+ (defaultTimeLocale)
 
 showDateTime :: FormatTime t => t -> String
 showDateTime time = formatTime defaultTimeLocale "%F %T %Z" time

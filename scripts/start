@@ -1,2 +1,2 @@
 #! /bin/bash
-dist/build/haskellnews/haskellnews haskellnews.conf
+/home/chris/.local/bin/haskellnews haskellnews.conf

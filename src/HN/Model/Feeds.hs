@@ -11,7 +11,7 @@ import HN.Curl
 import Control.Applicative
 import Network.URI
 import Snap.App
-import System.Locale
+
 import Text.Feed.Import
 import Text.Feed.Query
 import Text.Feed.Types

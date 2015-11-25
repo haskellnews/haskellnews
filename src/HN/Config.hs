@@ -10,7 +10,7 @@ import Data.ConfigFile
 import Database.PostgreSQL.Simple (ConnectInfo(..))
 import qualified Data.Text as T
 import Network.Mail.Mime
-import Github.Repos (GithubAuth(..))
+import Github.Auth (GithubAuth(..))
 import Control.Applicative ((<$>),(<*>))
 import qualified Data.ByteString.Char8 as BS
 
@@ -49,4 +49,3 @@ getMaybe c section name =
   case get c section name of
     Left _  -> Nothing
     Right x -> Just x
-
