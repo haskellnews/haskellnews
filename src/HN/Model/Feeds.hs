@@ -121,7 +121,7 @@ makeItem :: Item -> Either String NewItem
 makeItem item =
   NewItem <$> extract "item" (getItemTitle item)
           <*> extract "publish date" (join (getItemPublishDate item))
-          <*> extract "description" (getItemDescription item)
+          <*> extract "description" (getItemDescription item <|> getItemTitle item)
           <*> extract "link" (getItemLink item >>= parseURILeniently)
 
   where extract label = maybe (Left ("Unable to extract " ++ label)) Right
