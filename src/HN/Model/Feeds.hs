@@ -40,7 +40,7 @@ importStackOverflow = do
   importGeneric StackOverflow "http://programmers.stackexchange.com/feeds/tag/haskell"
 
 importHaskellWiki =
-  importGeneric HaskellWiki "http://www.haskell.org/haskellwiki/index.php?title=Special:RecentChanges&feed=rss"
+  importGeneric HaskellWiki "http://wiki.haskell.org/index.php?title=Special:RecentChanges&feed=atom"
 
 importHackage =
   importGeneric Hackage "http://hackage.haskell.org/packages/recent.rss"
