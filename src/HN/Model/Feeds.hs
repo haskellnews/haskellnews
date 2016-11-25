@@ -51,11 +51,10 @@ importHackage =
 
 -- | Import all vimeo content.
 importVimeo = do
-  importGeneric Vimeo "http://vimeo.com/channels/haskell/videos/rss"
-  importGeneric Vimeo "http://vimeo.com/channels/galois/videos/rss"
-  importGenerically Vimeo
-  		    "http://vimeo.com/rickasaurus/videos/rss"
-  		    (\ni -> if isInfixOf "haskell" (map toLower (niTitle ni)) then return ni else Nothing)
+  importGeneric Vimeo "https://vimeo.com/channels/haskell/videos/rss"
+  importGeneric Vimeo "https://vimeo.com/channels/galois/videos/rss"
+  importGenerically Vimeo "https://vimeo.com/rickasaurus/videos/rss"
+    (\ni -> if isInfixOf "haskell" (map toLower (niTitle ni)) then return ni else Nothing)
 
 -- | Import @remember'd IRC quotes from ircbrowse.
 importIrcQuotes = do
