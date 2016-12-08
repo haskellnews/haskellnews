@@ -91,7 +91,7 @@ importProggit = do
 
 -- | Get Reddit feed.
 getReddit subreddit = do
-  result <- downloadFeed ("http://www.reddit.com/r/" ++ subreddit ++ "/.rss")
+  result <- downloadFeed ("https://www.reddit.com/r/" ++ subreddit ++ "/.rss")
   case result of
     Left e -> return (Left e)
     Right e -> return (mapM makeItem (feedItems e))
