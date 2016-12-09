@@ -2,6 +2,9 @@ sudo: false
 
 language: generic
 
+services:
+  - postgresql
+
 cache:
   directories:
   - $HOME/.stack
@@ -12,12 +15,25 @@ addons:
       - libgmp-dev
 
 before_install:
-- mkdir -p ~/.local/bin
-- export PATH=$HOME/.local/bin:$PATH
-- travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
+  - mkdir -p ~/.local/bin
+  - export PATH=$HOME/.local/bin:$PATH
+  - travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
 
 install:
-- stack --no-terminal --install-ghc test --only-dependencies
+  - psql -c 'create database haskellnews;' -U postgres
+  - mkdir -p /tmp/hn-cache/ log/
+  - |
+    cp haskellnews.conf.sample haskellnews.conf
+    sed -i 's/user = haskellnews/user = postgres/g' haskellnews.conf >> haskellnews.conf
+    sed -i 's/pass = haskellnews/pass = postgres/g' haskellnews.conf >> haskellnews.conf
 
 script:
-- stack --no-terminal test --haddock --no-haddock-deps
+  - stack build --no-terminal
+  - stack exec haskellnews haskellnews.conf create-version
+  - stack exec haskellnews haskellnews.conf migrate
+  - stack exec haskellnews haskellnews.conf github
+  - if [[ $(stack exec haskellnews haskellnews.conf import | wc -c) -ne 0 ]]; then travis_terminate 1; fi
+  - |
+    stack exec haskellnews haskellnews.conf &
+    sleep 1 && curl http://0.0.0.0:10010/
+    pkill haskell
