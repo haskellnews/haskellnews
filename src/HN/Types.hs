@@ -159,7 +159,7 @@ sourceToUrl i =
       Jobs -> "http://www.haskellers.com/jobs"
       PlanetHaskell -> "https://planet.haskell.org/"
       HaskellCafe -> "https://groups.google.com/forum/#!forum/haskell-cafe"
-      GooglePlus -> "https://plus.google.com/communities/104818126031270146189"
+      GooglePlus -> "https://plus.google.com/communities/104818126031270146189?hl=en"
       IrcQuotes -> "http://ircbrowse.net/haskell"
       Pastes -> "http://lpaste.net/browse"
       HaskellLive -> "http://haskelllive.com/"
