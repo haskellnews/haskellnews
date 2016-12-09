@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/chrisdone/haskellnews.svg?branch=master)](https://travis-ci.org/chrisdone/haskellnews)
+
 An aggregation of all online content related to Haskell.
 
 ## Build notes
