@@ -28,7 +28,7 @@ install:
     sed -i 's/pass = haskellnews/pass = postgres/g' haskellnews.conf >> haskellnews.conf
 
 script:
-  - stack build --no-terminal
+  - stack build --no-terminal --install-ghc --test --haddock --no-haddock-deps
   - stack exec haskellnews haskellnews.conf create-version
   - stack exec haskellnews haskellnews.conf migrate
   - stack exec haskellnews haskellnews.conf github
