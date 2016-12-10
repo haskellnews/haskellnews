@@ -7,7 +7,7 @@ services:
 
 cache:
   directories:
-  - $HOME/.stack
+  - "$HOME/.stack"
 
 addons:
   apt:
@@ -16,7 +16,7 @@ addons:
 
 before_install:
   - mkdir -p ~/.local/bin
-  - export PATH=$HOME/.local/bin:$PATH
+  - export PATH="$HOME/.local/bin:$PATH"
   - travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
 
 install:
@@ -32,7 +32,9 @@ script:
   - stack exec haskellnews haskellnews.conf create-version
   - stack exec haskellnews haskellnews.conf migrate
   - stack exec haskellnews haskellnews.conf github
-  - if [[ $(stack exec haskellnews haskellnews.conf import | wc -c) -ne 0 ]]; then travis_terminate 1; fi
+  - |
+    IMPORT_OUTPUT=$(stack exec haskellnews haskellnews.conf import)
+    if [[ $($IMPORT_OUTPUT | wc -c) -ne 0 ]]; then travis_terminate 1; fi
   - |
     stack exec haskellnews haskellnews.conf &
     sleep 1 && curl http://0.0.0.0:10010/
