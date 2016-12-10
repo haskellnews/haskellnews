@@ -123,7 +123,7 @@ extractTwitterItems = go where
 -- | Import events.
 importEvents :: Model c s (Either String ())
 importEvents = do
-  result <- io $ downloadString "http://www.haskell.org/haskellwiki/index.php?title=Template:Main/Events&printable=yes"
+  result <- io $ downloadString "https://wiki.haskell.org/index.php?title=Template:Main/Events&printable=yes"
   case result of
     Left e -> return (Left (show e))
     Right str -> do
