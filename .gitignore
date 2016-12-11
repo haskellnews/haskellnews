@@ -9,3 +9,4 @@ haskellnews.conf
 .hsenv/
 .stack-work
 github/
+.ghci
