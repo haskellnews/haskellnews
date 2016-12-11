@@ -3,8 +3,6 @@ packages:
 - .
 - upstream/snap-app
 - upstream/MonadCatchIO-mtl
-- upstream/MonadCatchIO-transformers
-
 extra-deps:
 - github-0.13.2
 - failure-0.2.0.3
