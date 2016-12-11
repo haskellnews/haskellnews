@@ -6,14 +6,11 @@ module HN.Model.Soup where
 
 import HN.Data
 import HN.Monads
-import HN.Model
 import HN.Model.Items
 import HN.Types
 import HN.Curl
 
 import Control.Applicative
-import Control.Monad.Error
-import Data.Time
 import Network.URI
 import Snap.App
 

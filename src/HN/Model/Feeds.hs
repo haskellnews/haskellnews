@@ -19,6 +19,7 @@ import Text.Feed.Types
 --------------------------------------------------------------------------------
 -- Various service feeds
 
+importHaskellCafe :: Model c s (Either String ())
 importHaskellCafe = do
   importGenerically HaskellCafe
                     "https://groups.google.com/forum/feed/haskell-cafe/msgs/rss_v2_0.xml"
@@ -29,28 +30,30 @@ importHaskellCafe = do
                 | otherwise = x
         label = "[Haskell-cafe]"
 
+importPlanetHaskell :: Model c s (Either String ())
 importPlanetHaskell =
   importGeneric PlanetHaskell "http://planet.haskell.org/rss20.xml"
 
+importJobs :: Model c s (Either String ())
 importJobs =
   importGeneric Jobs "http://www.haskellers.com/feed/jobs"
 
+importStackOverflow :: Model c s (Either String ())
 importStackOverflow = do
   importGeneric StackOverflow "http://stackoverflow.com/feeds/tag/haskell"
   importGeneric StackOverflow "http://programmers.stackexchange.com/feeds/tag/haskell"
   importGeneric StackOverflow "http://codereview.stackexchange.com/feeds/tag/haskell"
 
+importHaskellWiki :: Model c s (Either String ())
 importHaskellWiki =
   importGeneric HaskellWiki "http://wiki.haskell.org/index.php?title=Special:RecentChanges&feed=atom"
 
+importHackage :: Model c s (Either String ())
 importHackage =
   importGeneric Hackage "http://hackage.haskell.org/packages/recent.rss"
--- Old feed is gone:
--- importGeneric Hackage "http://hackage.haskell.org/recent.rss"
--- Old feed is gone:
--- importGeneric Hackage "http://hackage.haskell.org/packages/archive/recent.rss"
 
 -- | Import all vimeo content.
+importVimeo :: Model c s (Either String ())
 importVimeo = do
   importGeneric Vimeo "https://vimeo.com/channels/haskell/videos/rss"
   importGeneric Vimeo "https://vimeo.com/channels/galois/videos/rss"
@@ -58,11 +61,13 @@ importVimeo = do
     (\ni -> if isInfixOf "haskell" (map toLower (niTitle ni)) then return ni else Nothing)
 
 -- | Import @remember'd IRC quotes from ircbrowse.
+importIrcQuotes :: Model c s (Either String ())
 importIrcQuotes = do
   importGeneric IrcQuotes
                 "http://ircbrowse.net/quotes.rss"
 
 -- | Import pastes about Haskell.
+importPastes :: Model c s (Either String ())
 importPastes = do
   importGeneric Pastes
                 "http://lpaste.net/channel/haskell/rss"
@@ -71,6 +76,7 @@ importPastes = do
 -- Reddit
 
 -- | Get /r/haskell.
+importRedditHaskell :: Model c s (Either String ())
 importRedditHaskell = do
   result <- io $ getReddit "haskell"
   case result of
@@ -80,6 +86,7 @@ importRedditHaskell = do
       return (Right ())
 
 -- | Import from proggit.
+importProggit :: Model c s (Either String ())
 importProggit = do
   result <- io $ getReddit "programming"
   case result of
@@ -91,6 +98,7 @@ importProggit = do
   where hasHaskell = isInfixOf "haskell" . map toLower
 
 -- | Get Reddit feed.
+getReddit :: String -> IO (Either String [NewItem])
 getReddit subreddit = do
   result <- downloadFeed ("https://www.reddit.com/r/" ++ subreddit ++ "/.rss")
   case result of
@@ -147,12 +155,13 @@ downloadFeed uri = do
 -- Utilities
 
 -- | Parse one of the two dates that might occur out there.
+parseDate :: String -> Maybe ZonedTime
 parseDate x = parseRFC822 x <|> parseRFC3339 x
 
 -- | Parse an RFC 3339 timestamp.
 parseRFC3339 :: String -> Maybe ZonedTime
-parseRFC3339 = parseTime defaultTimeLocale "%Y-%m-%dT%TZ"
+parseRFC3339 = (parseTimeM True) defaultTimeLocale "%Y-%m-%dT%TZ"
 
 -- | Parse an RFC 822 timestamp.
 parseRFC822 :: String -> Maybe ZonedTime
-parseRFC822 = parseTime defaultTimeLocale rfc822DateFormat
+parseRFC822 = (parseTimeM True) defaultTimeLocale rfc822DateFormat

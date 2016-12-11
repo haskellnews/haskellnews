@@ -22,7 +22,7 @@ getItems :: Int -> Model c s [DItem]
 getItems limit =
   query ["SELECT id,source,title,added,published,description,link"
         ,"FROM item"
-	,"WHERE published < NOW()"
+        ,"WHERE published < NOW()"
         ,"ORDER BY published DESC"
         ,"LIMIT ?"]
         (Only limit)

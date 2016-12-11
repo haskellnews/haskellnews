@@ -150,7 +150,7 @@ sourceToUrl :: Source -> String
 sourceToUrl i =
     case i of
       Reddit -> "https://pay.reddit.com/r/haskell"
-      Vimeo -> "http://vimeo.com/channels/haskell" -- TODO: Also Galois
+      Vimeo -> "http://vimeo.com/channels/haskell"
       Twitter -> "https://twitter.com/search?q=haskell%20-rugby%20-jewelry%20%23haskell&src=typd"
       Hackage -> "https://hackage.haskell.org/packages/recent"
       HaskellWiki -> "https://www.haskell.org/haskellwiki/Special:RecentChanges"

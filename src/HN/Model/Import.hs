@@ -9,7 +9,7 @@ import HN.System
 
 import Snap.App
 
--- | Import all ALL THE THINGS.
+-- | Import ALL THE THINGS.
 importEverything :: Model c s ()
 importEverything = void $ do
   io $ hSetBuffering stdout NoBuffering

@@ -26,8 +26,7 @@ getConfig conf = do
           <- mapM (get c "WEB")
                   ["domain","cache"]
         [admin,siteaddy]
-          <- mapM (get c "ADDRESSES")
-	     	  ["admin","site_addy"]
+          <- mapM (get c "ADDRESSES") ["admin","site_addy"]
 
         let gituser = BS.pack <$> getMaybe c "GITHUB" "user"
             gitpw   = BS.pack <$> getMaybe c "GITHUB" "password"
@@ -36,9 +35,9 @@ getConfig conf = do
         return Config {
            configPostgres = ConnectInfo pghost (read pgport) pguser pgpass pgdb
          , configDomain = domain
-	 , configAdmin = Address Nothing (T.pack admin)
-	 , configSiteAddy = Address Nothing (T.pack siteaddy)
-	 , configCacheDir = cache
+         , configAdmin = Address Nothing (T.pack admin)
+         , configSiteAddy = Address Nothing (T.pack siteaddy)
+         , configCacheDir = cache
          , configGithubAuth = auth
          }
   case config of
