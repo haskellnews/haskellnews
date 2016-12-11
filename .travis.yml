@@ -37,5 +37,5 @@ script:
     if [[ $($IMPORT_OUTPUT | wc -c) -ne 0 ]]; then travis_terminate 1; fi
   - |
     stack exec haskellnews haskellnews.conf &
-    sleep 1 && curl http://0.0.0.0:10010/
+    sleep 1 && curl -s http://0.0.0.0:10010/
     pkill haskell
