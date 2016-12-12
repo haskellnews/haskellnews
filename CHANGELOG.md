@@ -1,4 +1,4 @@
-# 0.1.1.0 (unreleased)
+# 0.1.1.0
 
 * Add `codereview.stackexchange.com` feed (based on [PR #16]).
 * Improve README (see [issue #33]).
