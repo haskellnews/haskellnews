@@ -54,7 +54,8 @@ mixed now items = template "mixed" (return ()) $ do
 
 mixedContent now items =
   do row $
-          span12 $
+          span12 $ do
+            p $ em !. "muted" $ a ! href "/feed" ! target "_blank" $ "Subscribe via RSS"
             table !. "table" $
               mixedRows now items
 
