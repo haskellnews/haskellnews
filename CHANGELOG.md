@@ -1,3 +1,11 @@
+# 0.1.1.1 (unreleased)
+
+* Add RSS feed to `/mixed` view (see [PR #48]).
+* Remove unused Git submodule (see [PR #47]).
+
+[PR #48]: https://github.com/chrisdone/haskellnews/pull/48
+[PR #47]: https://github.com/chrisdone/haskellnews/pull/47
+
 # 0.1.1.0
 
 * Add `codereview.stackexchange.com` feed (based on [PR #16]).
