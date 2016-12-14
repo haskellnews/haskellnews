@@ -2,7 +2,9 @@
 
 * Add RSS feed to `/mixed` view (see [PR #48]).
 * Remove unused Git submodule (see [PR #47]).
+* Replace `MonadCatchIO` dependency with `exceptions` (see [PR #49]).
 
+[PR #49]: https://github.com/chrisdone/haskellnews/pull/48
 [PR #48]: https://github.com/chrisdone/haskellnews/pull/48
 [PR #47]: https://github.com/chrisdone/haskellnews/pull/47
 
