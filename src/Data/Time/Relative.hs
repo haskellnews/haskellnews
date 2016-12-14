@@ -19,16 +19,16 @@ relative :: UTCTime -- ^ The later time span.
          -> UTCTime -- ^ The earlier time span.
          -> Bool    -- ^ Display 'in/ago'?
          -> String  -- ^ Example: '3 seconds ago', 'in three days'.
-relative t1 t2 fix = maybe "unknown" format $ find (\(s,_,_) -> abs span>=s) $ reverse ranges where
+relative t1 t2 fix = maybe "unknown" format $ find (\(s,_,_) -> abs span'>=s) $ reverse ranges where
   minute = 60; hour = minute * 60; day = hour * 24;
   week = day * 7; month = day * 30; year = month * 12
   format range =
-    (if fix && span>0 then "in " else "")
+    (if fix && span'>0 then "in " else "")
     ++ case range of
         (_,str,0) -> str
-        (_,str,base) -> printf str (abs $ round (span / base) :: Integer)
-    ++ (if fix && span<0 then " ago" else "")
-  span = t1 `diffUTCTime` t2
+        (_,str,base) -> printf str (abs $ round (span' / base) :: Integer)
+    ++ (if fix && span'<0 then " ago" else "")
+  span' = t1 `diffUTCTime` t2
   ranges = [(0,"%d seconds",1)
            ,(minute,"a minute",0)
            ,(minute*2,"%d minutes",minute)

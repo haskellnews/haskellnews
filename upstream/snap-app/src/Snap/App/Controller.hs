@@ -21,7 +21,6 @@ import Snap.Core
 import Snap.App.Model (Pool,withPoolConnection)
 import Snap.App.Types
 
-import Control.Applicative
 import Control.Monad.Env
 import Control.Monad.Reader       (runReaderT)
 import Data.ByteString            (ByteString)

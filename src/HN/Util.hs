@@ -96,7 +96,7 @@ parseTime arg@('-':_) = do
   let t = addUTCTime diff now
   return t
 parseTime arg =
-  let maybet = DT.parseTime defaultTimeLocale "%FT%T" arg in
+  let maybet = (DT.parseTimeM True) defaultTimeLocale "%FT%T" arg in
   case maybet of
     Nothing -> error $ "bad time: " ++ arg
     Just t  -> return t
