@@ -6,8 +6,10 @@ module HN.View.Template where
 import HN.View
 import qualified Text.Blaze.Html5 as H (title)
 import qualified Text.Blaze.Html5.Attributes as A (name)
+import Text.Blaze.Internal (MarkupM)
 
-template name innerhead innerbody = do
+template :: AttributeValue -> MarkupM a -> MarkupM a1 -> MarkupM ()
+template bodyName innerhead innerbody = do
   docType
   html $ do
     head $ do H.title "Haskell News"
@@ -19,7 +21,7 @@ template name innerhead innerbody = do
               meta ! httpEquiv "Content-Type" ! content "text/html; charset=UTF-8"
               innerhead
               meta ! A.name "description" ! content "An aggregation of all online content related to Haskell, including Google+, Reddit, Twitter, GitHub, HaskellWiki, Stack Overflow, Planet Haskell, Hackage, ..."
-    body !# name $ do
+    body !# bodyName $ do
       innerbody
       footer
       script ! src "http://code.jquery.com/jquery-1.10.1.min.js" $ mempty
@@ -39,6 +41,7 @@ showCount = reverse . foldr merge "" . zip ("000,00,00,00"::String) . reverse . 
   merge (f,c) rest | f == ',' = "," ++ [c] ++ rest
                    | otherwise = [c] ++ rest
 
+footer :: Html
 footer =
   div !# "footer" $
     div !. "container" $ do

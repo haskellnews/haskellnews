@@ -8,7 +8,6 @@ module HN.Types where
 import HN.Blaze
 import HN.Monads
 
-import Control.Applicative
 import Control.Arrow
 import Data.Text (Text)
 import Data.Time (ZonedTime)
@@ -21,7 +20,6 @@ import Network.Mail.Mime (Address)
 import Network.URI
 import Snap.App.Types
 import Snap.App.Cache
-import Text.Blaze
 import Github.Auth (GithubAuth(..))
 
 --------------------------------------------------------------------------------
@@ -44,12 +42,12 @@ instance CacheDir Config where
   getCacheDir = configCacheDir
 
 instance AppLiftModel Config PState where
-  liftModel action = do
+  liftModel modelAction = do
     conn <- env controllerStateConn
     anns <- env controllerState
     conf <- env controllerStateConfig
     let st = ModelState conn anns conf
-    io $ runReaderT (runModel action) st
+    io $ runReaderT (runModel modelAction) st
 
 -- | App state.
 data PState = PState
@@ -186,12 +184,8 @@ data CacheKey
   | Grouped Bool
 
 instance Key CacheKey where
-  keyToString (Mixed b) = "mixed-" ++ (if b
-                                          then "embeddable"
-                                          else "full") ++ ".html"
-  keyToString (Grouped b) = "grouped" ++ (if b
-                                             then "embeddable"
-                                             else "full") ++ ".html"
+  keyToString (Mixed str) = "mixed-" ++ (if str then "embeddable" else "full") ++ ".html"
+  keyToString (Grouped str') = "grouped" ++ (if str' then "embeddable" else "full") ++ ".html"
 
 --------------------------------------------------------------------------------
 -- Misc types

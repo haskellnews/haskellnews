@@ -5,14 +5,16 @@
 
 module HN.View.Home where
 
-import           HN.View
+import           HN.View hiding (source, item)
 import           HN.View.Template
 
 import           Data.List.Split
 import qualified Data.Text as T
 import           Data.Time.Relative
 import           Network.URI
+import           Text.Blaze.Internal (MarkupM)
 
+grouped :: (Foldable t, ToMarkup m) => ZonedTime -> [(m, t DItem)] -> MarkupM ()
 grouped now groups = template "grouped" (return ()) $ do
   container $ do
     heading
@@ -23,14 +25,15 @@ grouped now groups = template "grouped" (return ()) $ do
           li $ a ! href "/mixed" $ "Mixed"
     groupedContent now groups
 
+groupedContent :: (Foldable t, ToMarkup m) => ZonedTime -> [(m, t DItem)] -> MarkupM ()
 groupedContent now groups =
   forM_ (chunksOf 2 groups) $ \items ->
     row $
-      forM_ items $ \(source,items) ->
+      forM_ items $ \(source,items') ->
         span6 $ do
           h2 $ toHtml source
           table !. "table" $
-            forM_ items $ \item ->
+            forM_ items' $ \item ->
               tr $ td $ do
                 a ! href (toValue (show (iLink item))) ! target "_blank" $ toHtml (iTitle item)
                 " — "
@@ -42,6 +45,7 @@ groupedContent now groups =
                             agoZoned (iPublished item) now
                   _ -> em $ agoZoned (iPublished item) now
 
+mixed :: (Foldable t) => ZonedTime -> t DItem -> MarkupM ()
 mixed now items = template "mixed" (return ()) $ do
   container $ do
     heading
@@ -52,6 +56,7 @@ mixed now items = template "mixed" (return ()) $ do
           li !. "active" $ a "Mixed"
     mixedContent now items
 
+mixedContent :: Foldable t => ZonedTime -> t DItem -> Html
 mixedContent now items =
   do row $
           span12 $ do
@@ -59,6 +64,7 @@ mixedContent now items =
             table !. "table" $
               mixedRows now items
 
+mixedRows :: Foldable t => ZonedTime -> t DItem -> MarkupM ()
 mixedRows now items =
   forM_ items $ \item ->
     tr ! id (toValue ("item-" ++ epoch (iPublished item))) $ do
@@ -77,11 +83,14 @@ mixedRows now items =
                     agoZoned (iPublished item) now
           _ -> em $ agoZoned (iPublished item) now
 
+epoch :: ZonedTime -> String
 epoch = formatTime defaultTimeLocale "%s"
 
+agoZoned :: ZonedTime -> ZonedTime -> Html
 agoZoned t1 t2 = span !. "relative-time" ! dataAttribute "epoch" (toValue (epoch t1)) ! title (toValue (show t1)) $
   toHtml (relativeZoned t1 t2 True)
 
+heading :: Html
 heading = do
   row $ span12 $ do
     h1 "Haskell News"

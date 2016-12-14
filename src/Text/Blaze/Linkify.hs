@@ -11,5 +11,5 @@ import Text.Links
 -- | Render some text to HTML, replacing any URIs with actual links.
 linkify :: Text -> Html
 linkify = mapM_ renderOrLeave . explodeLinks where
-  renderOrLeave (Right text) = toHtml text
+  renderOrLeave (Right txt) = toHtml txt
   renderOrLeave (Left uri) = a ! href (toValue (show uri)) $ toHtml (show uri)

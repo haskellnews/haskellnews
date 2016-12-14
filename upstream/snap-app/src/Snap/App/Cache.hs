@@ -46,12 +46,12 @@ cache key generate = do
   exists <- io $ doesFileExist cachePath
   if exists
      then do text <- io $ T.readFile cachePath
-     	     return (Just text)
+             return (Just text)
      else do text <- fmap (fmap renderHtml) generate
-     	     case text of
-	       Just text' -> do io $ createDirectoryIfMissing True tmpdir
+             case text of
+               Just text' -> do io $ createDirectoryIfMissing True tmpdir
                                 io $ T.writeFile cachePath text'
-	       	    	        return text
+                                return text
                Nothing -> return text
 
 -- | Clear the whole cache.

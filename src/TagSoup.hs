@@ -6,13 +6,12 @@
 module TagSoup where
 
 import Control.Applicative
-import Control.Monad.Error
+import Control.Monad.Except
 import Control.Monad.State
 import Data.Char
 import Data.List
 import Data.Maybe
 import Data.Time
-import Network.URI
 
 import Text.HTML.TagSoup
 import Text.HTML.TagSoup.Match
@@ -32,16 +31,16 @@ gotoTagByNameAttrs name attrs = do
   xs <- get
   case dropWhile (not . tagOpen (==name) attrs) xs of
     [] -> throwError $ "Unable to find tag " ++ name ++ "."
-    (x:xs) -> do put xs
-                 return x
+    (x:xs') -> do put xs'
+                  return x
 
 gotoTagByName :: String -> Soup (Tag String)
 gotoTagByName name = do
   xs <- get
   case dropWhile (not . tagOpen (==name) (const True)) xs of
     [] -> throwError $ "Unable to find tag " ++ name ++ "."
-    (x:xs) -> do put xs
-                 return x
+    (x:xs') -> do put xs'
+                  return x
 
 skipTagByName :: String -> Soup ()
 skipTagByName name = void $ gotoTagByName name
@@ -53,25 +52,25 @@ nextText :: Soup String
 nextText = do
   xs <- get
   case xs of
-    (TagText x:xs) -> do put xs
-                         return x
+    (TagText x:xs') -> do put xs'
+                          return x
     _ -> throwError $ "Expected tag content but got something else: " ++ show (take 1 xs)
 
 parseGithubTime :: (ParseTime a) => String -> Soup a
 parseGithubTime str =
-  case parseTime defaultTimeLocale "%Y-%m-%dT%T%z" str of
+  case (parseTimeM True) defaultTimeLocale "%Y-%m-%dT%T%z" str of
     Nothing -> throwError $ "Unable to parse datetime: " ++ str
     Just t -> return t
 
 parseDate :: (ParseTime a) => String -> Soup a
 parseDate str =
-  case parseTime defaultTimeLocale "%Y-%m-%d" str of
+  case (parseTimeM True) defaultTimeLocale "%Y-%m-%d" str of
     Nothing -> throwError $ "Unable to parse date: " ++ str
     Just t -> return t
 
 parseEpoch :: (ParseTime a) => String -> Soup a
 parseEpoch str =
-  case parseTime defaultTimeLocale "%s" str of
+  case (parseTimeM True) defaultTimeLocale "%s" str of
     Nothing -> throwError $ "Unable to parse epoch seconds to date: " ++ str
     Just t -> return t
 
@@ -86,13 +85,16 @@ tagsTxt = concat . mapMaybe maybeTagText
 trim' :: String -> String
 trim' = dropWhile isSpace . reverse . dropWhile isSpace . reverse
 
+skipTagByNameClass :: String -> String -> Soup()
 skipTagByNameClass name cls =
   skipTagByNameAttrs name
                      (any (\(key,value) -> key == "class" && any (==cls) (words value)))
 
+gotoTagByNameClass :: String -> String -> Soup (Tag String)
 gotoTagByNameClass name cls =
   gotoTagByNameAttrs name
                      (any (\(key,value) -> key == "class" && any (==cls) (words value)))
 
+meither :: MonadError e m => e -> Maybe a -> m a
 meither e Nothing = throwError e
 meither _ (Just x) = return x

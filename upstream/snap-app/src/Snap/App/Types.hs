@@ -15,7 +15,7 @@ module Snap.App.Types
        ,AppLiftModel(..))
        where
 
-import Control.Applicative        (Applicative,Alternative)
+import Control.Applicative        (Alternative)
 import Control.Monad              (MonadPlus)
 import Control.Monad.Catch        (MonadCatchIO)
 import Control.Monad.Reader       (ReaderT,MonadReader)

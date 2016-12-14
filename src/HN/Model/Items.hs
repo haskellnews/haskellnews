@@ -29,13 +29,13 @@ getItems limit =
 
 -- | Get items created after id.
 getItemsAfter :: Int -> Int -> Model c s [DItem]
-getItemsAfter id limit =
+getItemsAfter itemId limit =
   query ["SELECT id,source,title,added,published,description,link"
         ,"FROM item"
         ,"WHERE published < NOW() and extract(epoch from published) > ?"
         ,"ORDER BY published DESC"
         ,"LIMIT ?"]
-        (id,limit)
+        (itemId,limit)
 
 -- | Insert an item, if it doesn't already exist.
 addItem :: Source -> NewItem -> Model c s ()
