@@ -39,7 +39,7 @@ executable haskellnews
                        github,
                        http-types,
                        http-conduit,
-                       MonadCatchIO-mtl
+                       exceptions
   hs-source-dirs:      src
   main-is:             Main.hs
   ghc-options:         -Wall -fno-warn-unused-do-bind
