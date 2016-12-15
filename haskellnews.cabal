@@ -18,7 +18,6 @@ executable haskellnews
                        blaze-markup,
                        snap-server,
                        snap-core,
-                       utf8-string,
                        bytestring,
                        mtl,
                        mime-mail,
@@ -27,11 +26,8 @@ executable haskellnews
                        data-default,
                        time,
                        ConfigFile,
-                       HUnit,
-                       network,
                        network-uri,
                        feed,
-                       old-locale,
                        curl,
                        split,
                        tagsoup,
@@ -39,8 +35,7 @@ executable haskellnews
                        directory,
                        github,
                        http-types,
-                       http-conduit,
-                       exceptions
+                       http-conduit
   hs-source-dirs:      src
   main-is:             Main.hs
   ghc-options:         -Wall -fno-warn-unused-do-bind
