@@ -48,7 +48,7 @@ downloadFeed its uri= do
                     >>= element "A"
                     >>= laxAttribute "href"
           dates = filter (T.isSuffixOf "thread.html" ) entries
-          archivedon = fetch_date cursor "Archived on:"
+          archivedon = fetchDate cursor "Archived on:"
       items <- getItems its uri $ take 1 dates
       let pubdate = case archivedon of
             [] -> "Tue Feb 17 18:55:05 UTC 2015"
@@ -91,7 +91,7 @@ dropSuffix suf s =
   then T.take (T.length s - T.length suf) s
   else s
 
-fetch_date cursor desc = do
+fetchDate cursor desc = do
   d <- fetch cursor desc
   -- we get this from mailman "Tue Feb 17 18:55:05 UTC 2015"
   -- and apparently we need "Tue, 17 Feb 2015 21:12:55 UTC"
