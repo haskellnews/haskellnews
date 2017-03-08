@@ -25,10 +25,8 @@ import qualified Data.Text as T
 
 import Data.Time.Format
 import Data.Time.LocalTime ( ZonedTime )
-import Data.Time ( rfc822DateFormat, defaultTimeLocale )
+-- import Data.Time ( rfc822DateFormat, defaultTimeLocale )
 import Data.Char (isDigit)
-
-import System.IO
 
 test1 = do
   downloadFeed 10 "https://mail.haskell.org/pipermail/haskell-cafe/"
@@ -55,16 +53,13 @@ downloadFeed its uri= do
       let pubdate = case archivedon of
             [] -> "Tue Feb 17 18:55:05 UTC 2015"
             d : _ -> d
-      -- mapM_ print items
       let feed0 = newFeed (RSSKind Nothing)
           feed = id
                $ withFeedPubDate pubdate
                $ foldr addItem feed0 items
-      -- print feed    
       return $ Right feed
 
 getDoc uri = do
-  -- hPutStrLn stderr $ unwords ["getDoc", uri]  
   result <- simpleHttp uri
   return $ Right $ Text.HTML.DOM.parseLBS result
 
