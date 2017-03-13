@@ -1,10 +1,14 @@
 # 0.1.1.1 (unreleased)
 
+* Remove haskell-cafe google feed (see [PR #55]).
+* Add mailman parser (see [PR #53]).
 * Add RSS feed to `/mixed` view (see [PR #48]).
 * Remove unused Git submodule (see [PR #47]).
 * Replace `MonadCatchIO` dependency with `exceptions` (see [PR #49]).
 
-[PR #49]: https://github.com/chrisdone/haskellnews/pull/48
+[PR #54]: https://github.com/chrisdone/haskellnews/pull/55
+[PR #53]: https://github.com/chrisdone/haskellnews/pull/53
+[PR #49]: https://github.com/chrisdone/haskellnews/pull/49
 [PR #48]: https://github.com/chrisdone/haskellnews/pull/48
 [PR #47]: https://github.com/chrisdone/haskellnews/pull/47
 

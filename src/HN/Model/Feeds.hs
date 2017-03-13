@@ -21,22 +21,11 @@ import Text.Feed.Types
 --------------------------------------------------------------------------------
 -- Various service feeds
 
-importHaskellCafe :: Model c s (Either String ())
-importHaskellCafe = do
-  importGenerically HaskellCafe
-                    "https://groups.google.com/forum/feed/haskell-cafe/msgs/rss_v2_0.xml"
-                    (\item -> return (item { niTitle = strip (niTitle item) }))
-
-  where strip x | isPrefixOf "re: " (map toLower x) = strip (drop 4 x)
-                | isPrefixOf label x = drop (length label) x
-                | otherwise = x
-        label = "[Haskell-cafe]"
-
 importHaskellCafeNative :: Model c s (Either String ())
 importHaskellCafeNative =
   importMailman 50
                 HaskellCafeNative
-                "https://mail.haskell.org/pipermail/haskell-cafe/" 
+                "https://mail.haskell.org/pipermail/haskell-cafe/"
                 (\item -> return (item { niTitle = strip (niTitle item) }))
 
   where strip x | isPrefixOf "re: " (map toLower x) = strip (drop 4 x)

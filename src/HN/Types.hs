@@ -91,7 +91,6 @@ data Source
   | StackOverflow
   | Jobs
   | PlanetHaskell
-  | HaskellCafe
   | HaskellCafeNative
   | GooglePlus
   | IrcQuotes
@@ -111,7 +110,6 @@ sourceMapping =
   ,(StackOverflow,7)
   ,(Jobs,8)
   ,(PlanetHaskell,9)
-  ,(HaskellCafe,10)
   ,(GooglePlus,11)
   ,(IrcQuotes,12)
   ,(Pastes,13)
@@ -139,7 +137,6 @@ sourceToString i =
       StackOverflow -> "Stack Overflow"
       Jobs -> "Jobs"
       PlanetHaskell -> "Planet Haskell"
-      HaskellCafe -> "Haskell-Cafe"
       HaskellCafeNative -> "Haskell-Cafe"
       GooglePlus -> "Google+"
       IrcQuotes -> "IRC Quotes"
@@ -159,7 +156,6 @@ sourceToUrl i =
       StackOverflow -> "http://stackoverflow.com/questions/tagged/haskell?sort=newest"
       Jobs -> "http://www.haskellers.com/jobs"
       PlanetHaskell -> "https://planet.haskell.org/"
-      HaskellCafe -> "https://groups.google.com/forum/#!forum/haskell-cafe"
       HaskellCafeNative -> "https://mail.haskell.org/pipermail/haskell-cafe/"
       GooglePlus -> "https://plus.google.com/communities/104818126031270146189?hl=en"
       IrcQuotes -> "http://ircbrowse.net/haskell"
