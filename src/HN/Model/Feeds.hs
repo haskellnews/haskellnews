@@ -8,6 +8,8 @@ import HN.Model.Items
 import HN.Types
 import HN.Curl
 
+import qualified HN.Model.Mailman (downloadFeed)
+
 import Control.Applicative
 import Network.URI
 import Snap.App
@@ -24,6 +26,18 @@ importHaskellCafe = do
   importGenerically HaskellCafe
                     "https://groups.google.com/forum/feed/haskell-cafe/msgs/rss_v2_0.xml"
                     (\item -> return (item { niTitle = strip (niTitle item) }))
+
+  where strip x | isPrefixOf "re: " (map toLower x) = strip (drop 4 x)
+                | isPrefixOf label x = drop (length label) x
+                | otherwise = x
+        label = "[Haskell-cafe]"
+
+importHaskellCafeNative :: Model c s (Either String ())
+importHaskellCafeNative =
+  importMailman 50
+                HaskellCafeNative
+                "https://mail.haskell.org/pipermail/haskell-cafe/" 
+                (\item -> return (item { niTitle = strip (niTitle item) }))
 
   where strip x | isPrefixOf "re: " (map toLower x) = strip (drop 4 x)
                 | isPrefixOf label x = drop (length label) x
@@ -124,6 +138,16 @@ importGenerically source uri f = do
       mapM_ (addItem source) (catMaybes items)
       return (Right ())
 
+importMailman :: Int -> Source -> String -> (NewItem -> Maybe NewItem) -> Model c s (Either String ())
+importMailman its source uri f = do
+  result <- io $ HN.Model.Mailman.downloadFeed its uri
+  case result >>= mapM (fmap f . makeItem) . feedItems of
+    Left e -> do
+      return (Left e)
+    Right items -> do
+      mapM_ (addItem source) (catMaybes items)
+      return (Right ())
+
 -- | Make an item from a feed item.
 makeItem :: Item -> Either String NewItem
 makeItem item =
@@ -132,7 +156,7 @@ makeItem item =
           <*> extract "description" (getItemDescription item <|> getItemTitle item)
           <*> extract "link" (getItemLink item >>= parseURILeniently)
 
-  where extract label = maybe (Left ("Unable to extract " ++ label)) Right
+  where extract label = maybe (Left ("Unable to extract " ++ label ++ " for " ++ show item)) Right
 
 -- | Escape any characters not allowed in URIs because at least one
 -- feed (I'm looking at you, reddit) do not escape characters like ö.
