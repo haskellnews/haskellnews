@@ -22,7 +22,6 @@ importEverything = void $ do
         ,(importHaskellWiki,"importHaskellWiki")
         ,(importStackOverflow,"importStackOverflow")
         ,(importPlanetHaskell,"importPlanetHaskell")
-        -- ,(importHaskellCafeNative,"importHaskellCafe")
         ,(importHaskellCafeNative,"importHaskellCafeNative")
         ,(importGooglePlus,"importGooglePlus")
         ,(importIrcQuotes,"importIrcQuotes")

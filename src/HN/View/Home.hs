@@ -69,9 +69,7 @@ mixedRows now items =
   forM_ items $ \item ->
     tr ! id (toValue ("item-" ++ epoch (iPublished item))) $ do
       td !. "icon" $
-        img ! src (if iSource item == HaskellCafe
-                      then "http://www.haskell.org/favicon.ico"
-                      else toValue (show ((iLink item) { uriPath = "/favicon.ico" })))
+        img ! src (toValue (show ((iLink item) { uriPath = "/favicon.ico" })))
             !. "favicon"
             ! title (toValue (iSource item))
       td $ do
