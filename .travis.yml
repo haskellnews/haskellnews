@@ -39,3 +39,6 @@ script:
     stack exec haskellnews haskellnews.conf &
     sleep 1 && curl http://0.0.0.0:10010/ > /dev/null
     pkill haskell
+
+notifications:
+  email: false
