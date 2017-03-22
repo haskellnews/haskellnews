@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/chrisdone/haskellnews.svg?branch=master)](https://travis-ci.org/chrisdone/haskellnews)
+[![Build Status](https://travis-ci.org/haskellnews/haskellnews.svg?branch=master)](https://travis-ci.org/haskellnews/haskellnews)
 
 ## Overview
 
