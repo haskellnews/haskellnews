@@ -19,7 +19,7 @@ grouped :: Controller Config PState ()
 grouped = do
   embeddable <- getStringMaybe "embeddable"
   viewCached (Grouped (isJust embeddable)) $ do
-    groups <- forM [Reddit,HaskellCafeNative,StackOverflow,Github,PlanetHaskell,GooglePlus,Twitter,Events,Hackage,Vimeo,Pastes,HaskellWiki,IrcQuotes] $ \source -> do
+    groups <- forM [Reddit,HaskellCafe,Libraries,GhcDevs,StackOverflow,Github,PlanetHaskell,GooglePlus,Twitter,Events,Hackage,Vimeo,Pastes,HaskellWiki,IrcQuotes] $ \source -> do
       items <- model $ getItemsBySource source 10
       return (source,items)
     now <- io getZonedTime
