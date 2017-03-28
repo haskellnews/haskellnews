@@ -24,7 +24,7 @@ import Text.Feed.Types
 importHaskellCafeNative :: Model c s (Either String ())
 importHaskellCafeNative =
   importMailman 50
-                HaskellCafeNative
+                HaskellCafe
                 "https://mail.haskell.org/pipermail/haskell-cafe/"
                 (\item -> return (item { niTitle = strip (niTitle item) }))
 
