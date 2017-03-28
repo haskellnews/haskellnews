@@ -92,6 +92,8 @@ data Source
   | Jobs
   | PlanetHaskell
   | HaskellCafe
+  | Libraries
+  | GhcDevs
   | GooglePlus
   | IrcQuotes
   | Pastes
@@ -116,6 +118,8 @@ sourceMapping =
   ,(HaskellLive,14)
   ,(Events,15)
   ,(HaskellCafe,16)
+  ,(Libraries,17)
+  ,(GhcDevs,18)
   ]
 
 instance ToMarkup Source where
@@ -137,7 +141,9 @@ sourceToString i =
       StackOverflow -> "Stack Overflow"
       Jobs -> "Jobs"
       PlanetHaskell -> "Planet Haskell"
-      HaskellCafe -> "Haskell-Cafe"
+      HaskellCafe -> "Haskell Cafe"
+      Libraries -> "Libraries"
+      GhcDevs -> "GHC Devs"
       GooglePlus -> "Google+"
       IrcQuotes -> "IRC Quotes"
       Pastes -> "Pastes"
@@ -157,6 +163,8 @@ sourceToUrl i =
       Jobs -> "http://www.haskellers.com/jobs"
       PlanetHaskell -> "https://planet.haskell.org/"
       HaskellCafe -> "https://mail.haskell.org/pipermail/haskell-cafe/"
+      Libraries -> "https://mail.haskell.org/pipermail/libraries/"
+      GhcDevs -> "https://mail.haskell.org/pipermail/ghc-devs/"
       GooglePlus -> "https://plus.google.com/communities/104818126031270146189?hl=en"
       IrcQuotes -> "http://ircbrowse.net/haskell"
       Pastes -> "http://lpaste.net/browse"

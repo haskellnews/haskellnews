@@ -21,17 +21,31 @@ import Text.Feed.Types
 --------------------------------------------------------------------------------
 -- Various service feeds
 
-importHaskellCafeNative :: Model c s (Either String ())
-importHaskellCafeNative =
+importHaskellCafe :: Model c s (Either String ())
+importHaskellCafe =
   importMailman 50
                 HaskellCafe
                 "https://mail.haskell.org/pipermail/haskell-cafe/"
-                (\item -> return (item { niTitle = strip (niTitle item) }))
+                (\item -> return (item { niTitle = strip "[Haskell-cafe]" (niTitle item) }))
 
-  where strip x | isPrefixOf "re: " (map toLower x) = strip (drop 4 x)
+importLibraries :: Model c s (Either String ())
+importLibraries =
+  importMailman 50
+                Libraries
+                "https://mail.haskell.org/pipermail/libraries/"
+                (\item -> return (item { niTitle = strip "[libraries]" (niTitle item) }))
+
+importGhcDevs :: Model c s (Either String ())
+importGhcDevs =
+  importMailman 50
+                GhcDevs
+                "https://mail.haskell.org/pipermail/ghc-devs/"
+                (\item -> return (item { niTitle = strip "[ghc-devs]" (niTitle item) }))
+
+
+strip label x | isPrefixOf "re: " (map toLower x) = strip label (drop 4 x)
                 | isPrefixOf label x = drop (length label) x
                 | otherwise = x
-        label = "[Haskell-cafe]"
 
 importPlanetHaskell :: Model c s (Either String ())
 importPlanetHaskell =

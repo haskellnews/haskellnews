@@ -37,7 +37,8 @@ executable haskellnews
                        http-types,
                        http-conduit,
                        xml-conduit,
-                       html-conduit 
+                       html-conduit,
+                       containers
   hs-source-dirs:      src
   main-is:             Main.hs
   ghc-options:         -Wall -fno-warn-unused-do-bind
