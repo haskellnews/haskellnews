@@ -10,6 +10,7 @@ module HN.Model.Mailman where
 import Network.HTTP.Conduit
 
 import Text.Feed.Types
+import Text.Feed.Query (getItemTitle)
 import Text.Feed.Constructor
 
 import qualified Text.HTML.DOM
@@ -21,6 +22,8 @@ import qualified Data.Text as T
 import Data.Time.Format
 import Data.Time.LocalTime ( ZonedTime )
 import Data.Char (isDigit)
+
+import qualified Data.Set as S
 
 test1 :: IO (Either String Feed)
 test1 = downloadFeed 10 "https://mail.haskell.org/pipermail/haskell-cafe/"
@@ -61,13 +64,17 @@ getDoc uri = do
 -- we get the full month, and if it contains less that @its@ messages,
 -- we get the previous month as well, etc.)
 getItems :: Int -> String -> [T.Text] -> IO [Item]
-getItems its uri dates =
+getItems its uri dates = getItemsUnique S.empty its uri dates
+
+-- | get only the newest item for each subject
+getItemsUnique :: S.Set (Maybe String) -> Int -> String -> [T.Text] -> IO [Item]
+getItemsUnique seen its uri dates =
   if its <= 0 then return []
   else case dates of
     [] -> return []
     d:ates -> do
       result <- getDoc $ uri ++ T.unpack d
-      let items = case result of
+      let (seen', items) = uniques seen $ reverse $ case result of
             Left _ -> []
             Right doc ->
               let cursor = fromDocument doc
@@ -77,8 +84,16 @@ getItems its uri dates =
                   >>= parent
                   >>= element "LI"
                   >>= mkItem uri (dropSuffix "thread.html" d )
-      later <- getItems (its - length items) uri ates
+      later <- getItemsUnique seen' (its - length items) uri ates
       return $ items ++ later
+
+uniques seen [] = (seen, [])
+uniques seen (x:xs) = 
+  let s = getItemTitle x
+  in  if S.member s seen 
+      then uniques seen xs
+      else let (seen', xs') = uniques (S.insert s seen) xs
+           in  (seen', x:xs')
 
 dropSuffix :: T.Text -> T.Text -> T.Text
 dropSuffix suf s =
