@@ -21,6 +21,7 @@ import Network.URI
 import Snap.App.Types
 import Snap.App.Cache
 import Github.Auth (GithubAuth(..))
+import Data.List (intersperse, nub)
 
 --------------------------------------------------------------------------------
 -- Basic site types
@@ -91,13 +92,15 @@ data Source
   | StackOverflow
   | Jobs
   | PlanetHaskell
-  | HaskellCafeNative
+  | HaskellCafe
+  | Libraries
+  | GhcDevs
   | GooglePlus
   | IrcQuotes
   | Pastes
   | HaskellLive
   | Events
-  deriving (Typeable,Show,Eq,Enum)
+  deriving (Typeable,Show,Eq,Enum,Bounded)
 
 sourceMapping :: [(Source,Int)]
 sourceMapping =
@@ -115,7 +118,9 @@ sourceMapping =
   ,(Pastes,13)
   ,(HaskellLive,14)
   ,(Events,15)
-  ,(HaskellCafeNative,16)
+  ,(HaskellCafe,16)
+  ,(Libraries,17)
+  ,(GhcDevs,18)
   ]
 
 instance ToMarkup Source where
@@ -137,7 +142,9 @@ sourceToString i =
       StackOverflow -> "Stack Overflow"
       Jobs -> "Jobs"
       PlanetHaskell -> "Planet Haskell"
-      HaskellCafeNative -> "Haskell-Cafe"
+      HaskellCafe -> "Haskell Cafe"
+      Libraries -> "Libraries"
+      GhcDevs -> "GHC Devs"
       GooglePlus -> "Google+"
       IrcQuotes -> "IRC Quotes"
       Pastes -> "Pastes"
@@ -156,7 +163,9 @@ sourceToUrl i =
       StackOverflow -> "http://stackoverflow.com/questions/tagged/haskell?sort=newest"
       Jobs -> "http://www.haskellers.com/jobs"
       PlanetHaskell -> "https://planet.haskell.org/"
-      HaskellCafeNative -> "https://mail.haskell.org/pipermail/haskell-cafe/"
+      HaskellCafe -> "https://mail.haskell.org/pipermail/haskell-cafe/"
+      Libraries -> "https://mail.haskell.org/pipermail/libraries/"
+      GhcDevs -> "https://mail.haskell.org/pipermail/ghc-devs/"
       GooglePlus -> "https://plus.google.com/communities/104818126031270146189?hl=en"
       IrcQuotes -> "http://ircbrowse.net/haskell"
       Pastes -> "http://lpaste.net/browse"
@@ -180,12 +189,16 @@ instance ToField Source where
 -- Cache key
 
 data CacheKey
-  = Mixed Bool
-  | Grouped Bool
+  = Mixed Bool (Maybe [Source])
+  | Grouped Bool (Maybe [Source])
 
 instance Key CacheKey where
-  keyToString (Mixed str) = "mixed-" ++ (if str then "embeddable" else "full") ++ ".html"
-  keyToString (Grouped str') = "grouped" ++ (if str' then "embeddable" else "full") ++ ".html"
+  keyToString (Mixed str sources) = "mixed-" ++ (if str then "embeddable" else "full") ++ src_form sources ++ ".html"
+  keyToString (Grouped str' sources) = "grouped" ++ (if str' then "embeddable" else "full") ++ src_form sources ++ ".html"
+
+src_form :: Maybe [Source] -> String
+src_form Nothing = "nothing"
+src_form (Just ss) = concat $ intersperse "-" (map show $ nub ss)
 
 --------------------------------------------------------------------------------
 -- Misc types

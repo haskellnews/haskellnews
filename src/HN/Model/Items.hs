@@ -6,6 +6,8 @@ import HN.Types
 import HN.Monads
 
 import Snap.App
+import Data.List (sortOn)
+import Data.Time.LocalTime
 
 -- | Get items filtered by content source.
 getItemsBySource :: Source -> Int -> Model c s [DItem]
@@ -16,6 +18,15 @@ getItemsBySource source limit =
         ,"ORDER BY published DESC"
         ,"LIMIT ?"]
         (source,limit)
+
+getItemsBySources :: Maybe [Source] -> Int -> Model c s [DItem]
+getItemsBySources Nothing limit = getItems limit
+getItemsBySources (Just sources) limit = 
+  -- Note: this does too much work: it gets @limit@ items for each source.
+  -- Bounding this more tightly would require to rewrite the query.
+  -- I assume it does not matter for performance.
+      ( take limit . reverse . sortOn  (zonedTimeToLocalTime . iPublished) . concat )
+  <$> mapM ( \ s -> getItemsBySource s limit ) sources
 
 -- | Get recent items.
 getItems :: Int -> Model c s [DItem]
