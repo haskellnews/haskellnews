@@ -24,7 +24,8 @@ serve :: Config -> Pool -> Snap ()
 serve config pool = route routes where
   routes = [("/js/",serveDirectory "static/js")
            ,("/css/",serveDirectory "static/css")
-           ,("/mixed",run C.mixed)
+           ,("/mixed/:sources",run C.mixed)
+
            ,("/grouped",run C.grouped)
            ,("/feed",run C.feed)
            ,("/after/:epoch",run C.after)

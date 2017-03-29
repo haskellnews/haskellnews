@@ -14,12 +14,16 @@ import           Snap.App
 import           Snap.App.Cache
 import           Snap.App.RSS
 
+import qualified Data.Map.Strict as M
+
 -- | Grouped display.
 grouped :: Controller Config PState ()
 grouped = do
   embeddable <- getStringMaybe "embeddable"
-  viewCached (Grouped (isJust embeddable)) $ do
-    groups <- forM [Reddit,HaskellCafe,Libraries,GhcDevs,StackOverflow,Github,PlanetHaskell,GooglePlus,Twitter,Events,Hackage,Vimeo,Pastes,HaskellWiki,IrcQuotes] $ \source -> do
+  sources <-    getStringMaybe "sources"
+  let ss = selected_sources <$> sources
+  viewCached (Grouped (isJust embeddable) ss) $ do
+    groups <- forM (maybe [minBound .. maxBound] id ss) $ \source -> do
       items <- model $ getItemsBySource source 10
       return (source,items)
     now <- io getZonedTime
@@ -27,12 +31,25 @@ grouped = do
                Nothing -> V.grouped now groups
                Just{} -> V.groupedContent now groups
 
+available_sources :: M.Map String Source
+available_sources = M.fromList $ Prelude.map (\s -> (show s, s)) [ minBound .. maxBound ]
+
+-- | input is a parameter string like "HaskellCafe/Libraries/Reddit"
+selected_sources [] = []
+selected_sources s = 
+  let (pre, post) = span (/= ' ') s
+  in  (maybeToList $ M.lookup pre available_sources) 
+      ++ if Prelude.null post then [] else selected_sources $ drop 1 post
+  
+
 -- | Mixed display.
 mixed :: Controller Config PState ()
 mixed = do
   embeddable <- getStringMaybe "embeddable"
-  viewCached (Mixed (isJust embeddable)) $ do
-    items <- model $ getItems 100
+  sources <-    getStringMaybe "sources"
+  let ss = selected_sources <$> sources
+  viewCached (Mixed (isJust embeddable) ss) $ do
+    items <- model $ getItemsBySources ss 100
     now <- io getZonedTime
     return $ case embeddable of
                 Nothing -> V.mixed now items

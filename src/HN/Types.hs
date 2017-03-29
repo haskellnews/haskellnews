@@ -21,6 +21,7 @@ import Network.URI
 import Snap.App.Types
 import Snap.App.Cache
 import Github.Auth (GithubAuth(..))
+import Data.List (intersperse, nub)
 
 --------------------------------------------------------------------------------
 -- Basic site types
@@ -99,7 +100,7 @@ data Source
   | Pastes
   | HaskellLive
   | Events
-  deriving (Typeable,Show,Eq,Enum)
+  deriving (Typeable,Show,Eq,Enum,Bounded)
 
 sourceMapping :: [(Source,Int)]
 sourceMapping =
@@ -188,12 +189,16 @@ instance ToField Source where
 -- Cache key
 
 data CacheKey
-  = Mixed Bool
-  | Grouped Bool
+  = Mixed Bool (Maybe [Source])
+  | Grouped Bool (Maybe [Source])
 
 instance Key CacheKey where
-  keyToString (Mixed str) = "mixed-" ++ (if str then "embeddable" else "full") ++ ".html"
-  keyToString (Grouped str') = "grouped" ++ (if str' then "embeddable" else "full") ++ ".html"
+  keyToString (Mixed str sources) = "mixed-" ++ (if str then "embeddable" else "full") ++ src_form sources ++ ".html"
+  keyToString (Grouped str' sources) = "grouped" ++ (if str' then "embeddable" else "full") ++ src_form sources ++ ".html"
+
+src_form :: Maybe [Source] -> String
+src_form Nothing = "nothing"
+src_form (Just ss) = concat $ intersperse "-" (map show $ nub ss)
 
 --------------------------------------------------------------------------------
 -- Misc types
