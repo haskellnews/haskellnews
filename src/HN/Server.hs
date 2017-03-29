@@ -25,8 +25,7 @@ serve config pool = route routes where
   routes = [("/js/",serveDirectory "static/js")
            ,("/css/",serveDirectory "static/css")
            ,("/mixed/:sources",run C.mixed)
-
-           ,("/grouped",run C.grouped)
+           ,("/grouped/:sources",run C.grouped)
            ,("/feed",run C.feed)
            ,("/after/:epoch",run C.after)
            ,("/",run C.mixed)
