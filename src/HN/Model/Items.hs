@@ -12,7 +12,7 @@ getItemsBySource :: Source -> Int -> Model c s [DItem]
 getItemsBySource source limit =
   query ["SELECT id,source,title,added,published,description,link"
         ,"FROM item"
-        ,"WHERE source = ?"
+        ,"WHERE published < NOW() and source = ?"
         ,"ORDER BY published DESC"
         ,"LIMIT ?"]
         (source,limit)
