@@ -43,9 +43,9 @@ importJobs =
 
 importStackOverflow :: Model c s (Either String ())
 importStackOverflow = do
-  importGeneric StackOverflow "http://stackoverflow.com/feeds/tag/haskell"
-  importGeneric StackOverflow "http://programmers.stackexchange.com/feeds/tag/haskell"
-  importGeneric StackOverflow "http://codereview.stackexchange.com/feeds/tag/haskell"
+  importGeneric StackOverflow "https://stackoverflow.com/feeds/tag/haskell"
+  importGeneric StackOverflow "https://programmers.stackexchange.com/feeds/tag/haskell"
+  importGeneric StackOverflow "https://codereview.stackexchange.com/feeds/tag/haskell"
 
 importHaskellWiki :: Model c s (Either String ())
 importHaskellWiki =
