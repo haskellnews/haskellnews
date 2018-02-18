@@ -5,7 +5,8 @@
 [haskellnews.org] is an aggregation of all online content related to Haskell.
 
 > I think this paints a fairly comprehensive picture of the Haskell community’s
-> public activities. 
+> public activities.
+>
 > Certainly, if you want Haskell news, here is the best place online to go.
 >
 > [Haskell News] - Chris Done
