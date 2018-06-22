@@ -80,8 +80,14 @@ importPastes = do
 
 -- | Get /r/haskell.
 importRedditHaskell :: Model c s (Either String ())
-importRedditHaskell = do
-  result <- io $ getReddit "haskell"
+importRedditHaskell = importRedditHaskell_ "haskell"
+
+importRedditHaskellQuestions :: Model c s (Either String ())
+importRedditHaskellQuestions = importRedditHaskell_ "haskellquestions"
+
+importRedditHaskell_ :: String -> Model c s (Either String ())
+importRedditHaskell_ haskell = do
+  result <- io $ getReddit haskell
   case result of
     Left e -> return (Left e)
     Right items -> do
