@@ -14,6 +14,7 @@ importEverything :: Model c s ()
 importEverything = void $ do
   io $ hSetBuffering stdout NoBuffering
   forM_ [(importRedditHaskell,"importRedditHaskell")
+        ,(importRedditHaskellQuestions,"importRedditHaskellQuestions")
         ,(importProggit,"importProggit")
         ,(importVimeo,"importVimeo")
         ,(importHaskellTwitter,"importHaskellTwitter")
